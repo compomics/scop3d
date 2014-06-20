@@ -3,6 +3,7 @@ import wx
 import wx.xrc
 import wx.richtext
 from Bio import motifs
+import os
 from bio_retrieve_fasta import output2
 from bio_retrieve_fasta import output3
 from bio_retrieve_fasta import output4
@@ -64,6 +65,7 @@ class Scop3D ( wx.Frame ):
 		gbSizer2.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
 
 		self.m_richText6 = wx.TextCtrl( self.notebook_1_pane_2, wx.ID_ANY, str(alignmentid) , wx.DefaultPosition, wx.DefaultSize, wx.TE_MULTILINE|wx.VSCROLL|wx.HSCROLL|wx.NO_BORDER|wx.WANTS_CHARS )
+		self.m_richText6.SetFont( wx.Font( 11, 76, 90, 90, False, "Courier 10 Pitch" ) )
 		self.m_richText6.SetMinSize( wx.Size( 200,-1 ) )
 		self.m_richText6.SetMaxSize( wx.Size( 300,-1 ) )
 
@@ -71,6 +73,7 @@ class Scop3D ( wx.Frame ):
 
 		self.m_richText71 = wx.TextCtrl( self.notebook_1_pane_2, wx.ID_ANY, "   " + str(alignmentseq) + "   ", wx.DefaultPosition, wx.DefaultSize, wx.TE_MULTILINE|wx.VSCROLL|wx.HSCROLL|wx.NO_BORDER|wx.WANTS_CHARS )
 		# self.m_richText71.SetMinSize( wx.Size( 1,-1 ) )
+		self.m_richText71.SetFont( wx.Font( 11, 76, 90, 90, False, "Courier 10 Pitch" ) )
 		gbSizer2.Add( self.m_richText71, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.EXPAND |wx.ALL, 5 )
 
 		gbSizer2.AddGrowableRow( 0 )
@@ -87,6 +90,7 @@ class Scop3D ( wx.Frame ):
 
 
 		    self.m_richText3 = wx.richtext.RichTextCtrl( self.notebook_1_pane_3, wx.ID_ANY, str(abundance), wx.DefaultPosition, wx.DefaultSize, 0|wx.VSCROLL|wx.HSCROLL|wx.NO_BORDER|wx.WANTS_CHARS )
+		    self.m_richText3.SetFont( wx.Font( 11, 76, 90, 90, False, "Courier 10 Pitch" ) )
 		    gSizer4.Add( self.m_richText3, 1, wx.EXPAND |wx.ALL, 5 )
 
 
@@ -99,6 +103,7 @@ class Scop3D ( wx.Frame ):
 		    gSizer5 = wx.GridSizer( 0, 1, 0, 0 )
 
 		    self.m_richText4 = wx.richtext.RichTextCtrl( self.notebook_1_pane_4, wx.ID_ANY, str(amount), wx.DefaultPosition, wx.DefaultSize, 0|wx.VSCROLL|wx.HSCROLL|wx.NO_BORDER|wx.WANTS_CHARS )
+		    self.m_richText4.SetFont( wx.Font( 11, 76, 90, 90, False, "Courier 10 Pitch" ) )
 		    gSizer5.Add( self.m_richText4, 1, wx.EXPAND |wx.ALL, 5 )
 
 
@@ -106,7 +111,7 @@ class Scop3D ( wx.Frame ):
 		    self.notebook_1_pane_4.Layout()
 		    gSizer5.Fit( self.notebook_1_pane_4 )
 		    self.notebook_1.AddPage( self.notebook_1_pane_4, u"pdb_amount", False )
-		if output2 == 1 and conversion_fail != "fail":
+		if output2 == 1 and os.path.exists(project_dir + spacer + "sequence_logo.png")==True:
 		    self.notebook_1_pane_5 = wx.ScrolledWindow( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.HSCROLL|wx.VSCROLL )
 		    self.notebook_1_pane_5.SetScrollRate( 5, 5 )
 		    gSizer6 = wx.GridSizer(0, 1, 0, 0)
@@ -119,7 +124,7 @@ class Scop3D ( wx.Frame ):
 		    self.notebook_1_pane_5.Layout()
 		    gSizer6.Fit( self.notebook_1_pane_5)
 		    self.notebook_1.AddPage( self.notebook_1_pane_5, u"seq_logo", False )
-		if output2 == 1 and conversion_fail == "fail":
+		elif output2 == 1:
 		    self.notebook_1_pane_5 = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		    gSizer6 = wx.GridSizer( 0, 1, 0, 0 )
 		    self.m_seqlogo_fail = wx.richtext.RichTextCtrl( self.notebook_1_pane_5, wx.ID_ANY, str("sequence logo can be found here: " + project_dir + spacer + "sequence_logo.eps "), wx.DefaultPosition, wx.DefaultSize, 0|wx.VSCROLL|wx.HSCROLL|wx.NO_BORDER|wx.WANTS_CHARS )

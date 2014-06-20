@@ -243,6 +243,13 @@ def sequence_logo():
     fout = open(project_dir + spacer + "sequence_logo.eps", 'w')
     fout.write(eps)
 
+def convert():
+    input = project_dir + spacer + "sequence_logo.eps "
+    output = project_dir + spacer + "sequence_logo.png "
+    cmd = 'convert ' + input + output
+    os.system(cmd)
+
+
 def parse_pdb():
     get_reference()
     if output3 == 1:
@@ -258,10 +265,7 @@ def parse_pdb():
     if output2 == 1:
         sequence_logo()
         try:
-            input = project_dir + spacer + "sequence_logo.eps "
-            output = project_dir + spacer + "sequence_logo.png "
-            cmd = 'convert ' + input + output
-            os.system(cmd)
+            convert()
         except:
             global conversion_fail
             conversion_fail = "fail"
