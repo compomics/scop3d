@@ -25,7 +25,7 @@ chains = ""
 list_positions = []
 print project_name
 list_unique_chains = []
-
+conversion_fail = ""
 
 class MyFrame1 ( wx.Frame ):
 
@@ -239,8 +239,9 @@ def sequence_logo():
     options = LogoOptions()
     options.title = "sequence logo"
     format = LogoFormat(data, options)
+    eps=eps_formatter( data, format)
     fout = open(project_dir + spacer + "sequence_logo.eps", 'w')
-    eps_formatter( data, format, fout)
+    fout.write(eps)
 
 def parse_pdb():
     get_reference()
@@ -256,10 +257,15 @@ def parse_pdb():
         pdb_cleanup(name)
     if output2 == 1:
         sequence_logo()
-        input = project_dir + spacer + "sequence_logo.eps "
-        output = project_dir + spacer + "sequence_logo.png "
-        cmd = 'convert ' + input + output
-        os.system(cmd)
+        try:
+            input = project_dir + spacer + "sequence_logo.eps "
+            output = project_dir + spacer + "sequence_logo.png "
+            cmd = 'convert ' + input + output
+            os.system(cmd)
+        except:
+            global conversion_fail
+            conversion_fail = "fail"
+
         # im = Image.open(project_dir + spacer + "sequence_logo.eps")
         # im.save(project_dir + spacer + "sequence_logo.png", quality=100, optimize=True)
 

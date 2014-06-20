@@ -10,6 +10,7 @@ from bio_blast_pdb_fasta import project_dir
 from bio_retrieve_fasta import project_name
 from bio_blast_pdb_fasta import spacer
 from bio_parse_pdb_fasta import consensus
+from bio_parse_pdb_fasta import conversion_fail
 consensus = consensus
 file_info = open(project_dir + spacer + "info.txt", "r")
 if output3 == 1:
@@ -105,10 +106,11 @@ class Scop3D ( wx.Frame ):
 		    self.notebook_1_pane_4.Layout()
 		    gSizer5.Fit( self.notebook_1_pane_4 )
 		    self.notebook_1.AddPage( self.notebook_1_pane_4, u"pdb_amount", False )
-		if output2 == 1:
+		if output2 == 1 and conversion_fail != "fail":
 		    self.notebook_1_pane_5 = wx.ScrolledWindow( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.HSCROLL|wx.VSCROLL )
 		    self.notebook_1_pane_5.SetScrollRate( 5, 5 )
 		    gSizer6 = wx.GridSizer(0, 1, 0, 0)
+
 
 		    self.png = wx.Image(project_dir + spacer + "sequence_logo.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		    self.m_bitmap2 = wx.StaticBitmap(self.notebook_1_pane_5, -1, self.png, (10, 5), (self.png.GetWidth(), self.png.GetHeight()))
@@ -117,6 +119,16 @@ class Scop3D ( wx.Frame ):
 		    self.notebook_1_pane_5.Layout()
 		    gSizer6.Fit( self.notebook_1_pane_5)
 		    self.notebook_1.AddPage( self.notebook_1_pane_5, u"seq_logo", False )
+		if output2 == 1 and conversion_fail == "fail":
+		    self.notebook_1_pane_5 = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		    gSizer6 = wx.GridSizer( 0, 1, 0, 0 )
+		    self.m_seqlogo_fail = wx.richtext.RichTextCtrl( self.notebook_1_pane_5, wx.ID_ANY, str("sequence logo can be found here: " + project_dir + spacer + "sequence_logo.eps "), wx.DefaultPosition, wx.DefaultSize, 0|wx.VSCROLL|wx.HSCROLL|wx.NO_BORDER|wx.WANTS_CHARS )
+		    gSizer6.Add( self.m_seqlogo_fail, 1, wx.EXPAND |wx.ALL, 5 )
+		    self.notebook_1_pane_5.SetSizer( gSizer6 )
+		    self.notebook_1_pane_5.Layout()
+		    gSizer6.Fit( self.notebook_1_pane_5 )
+		    self.notebook_1.AddPage( self.notebook_1_pane_5, u"seq_logo", False )
+
 		# self.notebook_1_pane_6 = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		# self.notebook_1.AddPage( self.notebook_1_pane_6, u"6", False )
 		# self.notebook_1_pane_7 = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
