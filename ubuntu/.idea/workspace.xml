@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ee9ae540-3ed5-43cc-bc52-0010c64766bc" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../bio_blast_pdb_fasta.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../bio_conservation_mapping_fasta.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../bio_output.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../bio_parse_pdb_fasta.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../bio_retrieve_fasta.py" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bio_output.py" afterPath="$PROJECT_DIR$/bio_output.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bio_parse_pdb_fasta.py" afterPath="$PROJECT_DIR$/bio_parse_pdb_fasta.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="ee9ae540-3ed5-43cc-bc52-0010c64766bc" name="Default" comment="" />
     <ignored path="ubuntu.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -369,6 +360,11 @@
       <created>1403282649341</created>
       <updated>1403282649341</updated>
     </task>
+    <task id="LOCAL-00001" summary="output font">
+      <created>1403293108482</created>
+      <updated>1403293108482</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -395,6 +391,7 @@
     <frame x="64" y="-4" width="1303" height="773" extended-state="6" />
     <editor active="true" />
     <layout>
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32850242" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32850242" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -404,7 +401,7 @@
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24940048" sideWeight="0.42673108" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32850242" sideWeight="0.5003997" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29951692" sideWeight="0.49960032" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29951692" sideWeight="0.49960032" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -430,6 +427,8 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
+    <MESSAGE value="output font" />
+    <option name="LAST_COMMIT_MESSAGE" value="output font" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
