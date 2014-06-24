@@ -36,6 +36,8 @@ instances = []
 for record in SeqIO.parse(open(project_dir + spacer + "alignments" + spacer +"alignment_" + project_name + ".clw"), "clustal") :
     alignmentid += "\n" + record.id
     alignmentseq += "\n" + record.seq
+alignmentid += "\n\n consensusseq"
+alignmentseq += "\n\n" + consensus
 
 class Scop3D ( wx.Frame ):
 
