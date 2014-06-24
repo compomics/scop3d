@@ -149,8 +149,10 @@ class MyFrame2 ( wx.Frame ):
         # Connect Events
         self.select.Bind( wx.EVT_BUTTON, self.done )
 
+
     def __del__( self ):
         pass
+
 
     def done( self, event ):
             global row
