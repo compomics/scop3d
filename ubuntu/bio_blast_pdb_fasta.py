@@ -68,6 +68,7 @@ def blast():
     MainApp.Show()
     app.MainLoop()
 
+
 def download_pdb():
     result_handle = open(project_dir + spacer + "my_blast.xml")
     blast_record = NCBIXML.read(result_handle)
