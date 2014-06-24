@@ -131,7 +131,7 @@ class MyFrame2 ( wx.Frame ):
         gSizer4 = wx.GridSizer( 5, 1, 0, 0 )
 
         self.choose_pdb = wx.RadioBox( self, wx.ID_ANY, u"choose your pdb:", wx.DefaultPosition, wx.DefaultSize, choose_pdbChoices, 1, wx.RA_SPECIFY_COLS )
-        self.choose_pdb.SetSelection( 10 )
+        self.choose_pdb.SetSelection( 0 )
         gSizer4.Add( self.choose_pdb, 0, wx.ALL, 5 )
 
 
