@@ -99,7 +99,7 @@ class Scop3D ( wx.Frame ):
 		    self.notebook_1_pane_3.SetSizer( gSizer4 )
 		    self.notebook_1_pane_3.Layout()
 		    gSizer4.Fit( self.notebook_1_pane_3 )
-		    self.notebook_1.AddPage( self.notebook_1_pane_3, u"pdb_procent", False )
+		    self.notebook_1.AddPage( self.notebook_1_pane_3, u"pdb_abundance", False )
 		if output4 == 1:
 		    self.notebook_1_pane_4 = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		    gSizer5 = wx.GridSizer( 0, 1, 0, 0 )
@@ -112,7 +112,7 @@ class Scop3D ( wx.Frame ):
 		    self.notebook_1_pane_4.SetSizer( gSizer5 )
 		    self.notebook_1_pane_4.Layout()
 		    gSizer5.Fit( self.notebook_1_pane_4 )
-		    self.notebook_1.AddPage( self.notebook_1_pane_4, u"pdb_amount", False )
+		    self.notebook_1.AddPage( self.notebook_1_pane_4, u"pdb_entropy", False )
 		if output2 == 1 and os.path.exists(project_dir + spacer + "sequence_logo.png")==True:
 		    self.notebook_1_pane_5 = wx.ScrolledWindow( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.HSCROLL|wx.VSCROLL )
 		    self.notebook_1_pane_5.SetScrollRate( 5, 5 )

@@ -175,18 +175,21 @@ class Scop3D ( wx.Frame ):
 		# gSizer3.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 
 		self.output2 = wx.CheckBox( self.output, wx.ID_ANY, u"Sequence logo", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.output2.SetValue(True)
 		gSizer3.Add( self.output2, 0, wx.ALL, 5 )
 
 
 		gSizer3.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 
 		self.output3 = wx.CheckBox( self.output, wx.ID_ANY, u"pdb abundance", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.output3.SetValue(True)
 		gSizer3.Add( self.output3, 0, wx.ALL, 5 )
 
 
 		gSizer3.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 
 		self.output4 = wx.CheckBox( self.output, wx.ID_ANY, u"pdb Entropy", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.output4.SetValue(True)
 		gSizer3.Add( self.output4, 0, wx.ALL, 5 )
 
 		gSizer3.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
