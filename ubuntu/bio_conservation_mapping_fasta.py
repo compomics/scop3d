@@ -1,5 +1,6 @@
 from Bio.Align.Applications import MuscleCommandline
 import os
+import math
 from Bio.Align import AlignInfo
 from Bio import AlignIO
 from Bio import SeqIO
@@ -15,6 +16,7 @@ file_ali_out = project_dir + spacer + "alignments" + spacer + "alignment_" + pro
 frequency_all = []
 consensus = ""
 procent_complete = []
+entropy_position_list=[]
 
 def make_dir():
     os.makedirs(project_dir + spacer + "alignments")
@@ -111,14 +113,42 @@ def frequency():
     #make first line of csv file
     procent_line = []
     global procent_complete
+    global entropy_position_list
     procent_file = open(project_dir + spacer + "matrices" + spacer + "procent.csv", "a")
     procent_file.write(str(aadict))
     procent_file.write("\n")
     procent_file.close()
     for number in lines:
+        entropy_list=[]
+        entropy_num = 0
+        entropy_position = 0
+        entropy_num = 0
+        entropy_position = 0
         for AA in aadict:
+            entropy_num += frequency_matrix[number][AA]
+
+        for AA in aadict:
+            #abundance
             procent = 1 - (frequency_matrix[number][AA] / amount_seq)
             procent_line.append(procent)
+
+            #entropy
+            quotient_entropy = frequency_matrix[number][AA]/entropy_num
+            if quotient_entropy != 0:
+                log_entropy = math.log(quotient_entropy,2)
+                entropy = quotient_entropy * log_entropy
+                entropy = math.fabs(entropy)
+                entropy_list.append(entropy)
+            else:
+                entropy_list.append(0.000)
+        for entropy_item in entropy_list:
+            entropy_position = float(entropy_position)
+            entropy_position += float(entropy_item)
+            entropy_position = float(entropy_position)
+            entropy_position = "%.3f"%entropy_position
+        entropy_position_list.append(entropy_position)
+
+
         #write line to csv file
         print(procent_line)
         procent_line_str = str(procent_line)
@@ -130,6 +160,9 @@ def frequency():
         procent_line = []
         #starting new line
         n = 0
+    print entropy_position_list
+
+
     print procent_complete
 def conservation_mapping():
     make_dir()

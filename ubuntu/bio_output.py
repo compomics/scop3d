@@ -16,14 +16,14 @@ consensus = consensus
 file_info = open(project_dir + spacer + "info.txt", "r")
 if output3 == 1:
     file_abundance=open(project_dir + spacer + "myOutfile_abundance.pdb", "r")
-    abundance = "Lines of pdb containing C-alpha coordinates and entropy: \n"
+    abundance = "Lines of pdb containing C-alpha coordinates and the abundance: \n"
     for line in file_abundance:
         if line.startswith("ATOM") and "CA" in line:
             abundance += line
 
 if output4 == 1:
     file_amount=open(project_dir + spacer + "myOutfile_amount.pdb", "r")
-    amount = "Lines of pdb containing C-alpha coordinates and number of different AA: \n"
+    amount = "Lines of pdb containing C-alpha coordinates and the entropy: \n"
     for line in file_amount:
         if line.startswith("ATOM") and "CA" in line:
             amount += line

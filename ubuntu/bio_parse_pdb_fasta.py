@@ -10,6 +10,7 @@ from bio_conservation_mapping_fasta import procent_complete
 from bio_conservation_mapping_fasta import spacer
 from bio_conservation_mapping_fasta import project_dir
 from bio_conservation_mapping_fasta import consensus
+from bio_conservation_mapping_fasta import entropy_position_list
 from bio_blast_pdb_fasta import project_name
 from bio_blast_pdb_fasta import pdbfile
 from bio_retrieve_fasta import output2
@@ -79,11 +80,16 @@ def bigest():
         amount_aa = 0
         for item in list:
             if smallest > item:
+                item = item
                 smallest = item
-            if item < 1:
-                amount_aa += 1
-        bigest_amount_complete.append([smallest,amount_aa])
+        smallest = float(smallest)
+        smallest = "%.3f"%smallest
+        bigest_amount_complete.append([smallest])
     print (bigest_amount_complete)
+    print len(bigest_amount_complete)
+    print len(entropy_position_list)
+    for x in range (0, len(entropy_position_list), 1):
+        bigest_amount_complete[x].append(entropy_position_list[x])
     return bigest_amount_complete
 
 
@@ -100,7 +106,7 @@ def get_reference():
             list_unique_chains.append(i)
 
     app = wx.App(0)
-    MainApp =MyFrame1(None)
+    MainApp = MyFrame1(None)
     MainApp.Show()
     app.MainLoop()
 
@@ -221,12 +227,15 @@ def make_outputpdb(name, outputtype):
         os.remove(project_dir + spacer + "myOutfile_" + name + ".pdb")
 
 
-def pdb_cleanup(name):
+def pdb_cleanup(name, output):
     pdb = open(str(pdbfile + name), "r")
     myOutfile = open(str(project_dir + spacer + "myOutfile_"+ name + ".pdb"), "w")
     for myPDBline in pdb:
         if myPDBline.startswith("ATOM") and myPDBline[21] not in chains:
-           myOutfile.write(myPDBline[:60]+ '  0.50' + myPDBline[66:])
+            if output == "output3":
+                myOutfile.write(myPDBline[:60]+ '  0.500' + myPDBline[66:])
+            if output == "output4":
+                myOutfile.write(myPDBline[:60]+ '  1.000' + myPDBline[66:])
         else:
             myOutfile.write(myPDBline)
     myOutfile.close()
@@ -256,12 +265,14 @@ def parse_pdb():
         outputtype = 0
         name = "abundance"
         make_outputpdb(name, outputtype)
-        pdb_cleanup(name)
+        output = "output3"
+        pdb_cleanup(name, output)
     if output4 == 1:
         outputtype = 1
         name = "amount"
         make_outputpdb(name, outputtype)
-        pdb_cleanup(name)
+        output = "output4"
+        pdb_cleanup(name, output)
     if output2 == 1:
         sequence_logo()
         try:
