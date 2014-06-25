@@ -68,6 +68,7 @@ def blast():
     MainApp.Show()
     app.MainLoop()
 
+
 def download_pdb():
     result_handle = open(project_dir + spacer + "my_blast.xml")
     blast_record = NCBIXML.read(result_handle)
@@ -130,7 +131,7 @@ class MyFrame2 ( wx.Frame ):
         gSizer4 = wx.GridSizer( 5, 1, 0, 0 )
 
         self.choose_pdb = wx.RadioBox( self, wx.ID_ANY, u"choose your pdb:", wx.DefaultPosition, wx.DefaultSize, choose_pdbChoices, 1, wx.RA_SPECIFY_COLS )
-        self.choose_pdb.SetSelection( 10 )
+        self.choose_pdb.SetSelection( 0 )
         gSizer4.Add( self.choose_pdb, 0, wx.ALL, 5 )
 
 
@@ -148,8 +149,10 @@ class MyFrame2 ( wx.Frame ):
         # Connect Events
         self.select.Bind( wx.EVT_BUTTON, self.done )
 
+
     def __del__( self ):
         pass
+
 
     def done( self, event ):
             global row

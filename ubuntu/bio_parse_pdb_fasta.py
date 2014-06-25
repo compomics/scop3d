@@ -17,6 +17,7 @@ from bio_retrieve_fasta import output2
 from bio_retrieve_fasta import output3
 from bio_retrieve_fasta import output4
 from weblogolib import *
+from bio_retrieve_fasta import muscle_loc
 
 
 
@@ -38,7 +39,7 @@ class MyFrame1 ( wx.Frame ):
 		lbl_chain = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"choose the chains to change:" ), wx.VERTICAL )
 
 		self.m_panel1 = wx.Panel( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		gSizer1 = wx.GridSizer( 1, 1, 0, 0 )
+		gSizer1 = wx.GridSizer( 2, 1, 0, 0 )
 
 		chainsChoices = list_unique_chains
 		self.chains = wx.CheckListBox( self.m_panel1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, chainsChoices, 0 )
@@ -125,8 +126,12 @@ def get_alignment(chain):
     pairwise_aln = open(project_dir + spacer + "fasta_cons_" + str(chain) + ".fasta", "w")
     pairwise_aln.write(">consensus \n" + str(consensus) + "\n" + ">sequence " + str(chain) + "\n" + str(seq))
     pairwise_aln.close()
-    muscle_cline = MuscleCommandline(input=project_dir + spacer + "fasta_cons_" + str(chain) + ".fasta", out=project_dir + spacer + "pairwise_aln_cons_" + str(chain) + ".clw", clwstrict=True)
-    muscle_cline()
+    if muscle_loc:
+        muscle_cline = MuscleCommandline(muscle_loc, input=project_dir + spacer + "fasta_cons_" + str(chain) + ".fasta", out=project_dir + spacer + "pairwise_aln_cons_" + str(chain) + ".clw", clwstrict=True)
+        muscle_cline()
+    else:
+        muscle_cline = MuscleCommandline(input=project_dir + spacer + "fasta_cons_" + str(chain) + ".fasta", out=project_dir + spacer + "pairwise_aln_cons_" + str(chain) + ".clw", clwstrict=True)
+        muscle_cline()
     seq_alignment = []
     handle = open(project_dir + spacer + "pairwise_aln_cons_" + str(chain) + ".clw", "rU")
     for record in SeqIO.parse(handle, "clustal") :
