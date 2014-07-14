@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ee9ae540-3ed5-43cc-bc52-0010c64766bc" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bio_output.py" afterPath="$PROJECT_DIR$/bio_output.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bio_conservation_mapping_fasta.py" afterPath="$PROJECT_DIR$/bio_conservation_mapping_fasta.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bio_parse_pdb_fasta.py" afterPath="$PROJECT_DIR$/bio_parse_pdb_fasta.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bio_retrieve_fasta.py" afterPath="$PROJECT_DIR$/bio_retrieve_fasta.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -49,7 +50,7 @@
       <file leaf-file-name="bio_conservation_mapping_fasta.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bio_conservation_mapping_fasta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="159" column="25" selection-start="5720" selection-end="5720" vertical-scroll-proportion="-64.28571" vertical-offset="135" max-vertical-offset="2745">
+            <state line="167" column="24" selection-start="6228" selection-end="6228" vertical-scroll-proportion="0.62857145" vertical-offset="2527" max-vertical-offset="2835">
               <folding>
                 <element signature="e#0#52#0" expanded="true" />
               </folding>
@@ -61,17 +62,15 @@
         <entry file="file://$PROJECT_DIR$/bio_output.py">
           <provider selected="true" editor-type-id="text-editor">
             <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2550">
-              <folding>
-                <element signature="e#21#30#0" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bio_parse_pdb_fasta.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="bio_parse_pdb_fasta.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bio_parse_pdb_fasta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="90" column="36" selection-start="2739" selection-end="2739" vertical-scroll-proportion="-7.714286" vertical-offset="1080" max-vertical-offset="4470">
+            <state line="122" column="12" selection-start="3751" selection-end="3751" vertical-scroll-proportion="-6.220339" vertical-offset="3665" max-vertical-offset="4500">
               <folding>
                 <element signature="e#0#21#0" expanded="true" />
               </folding>
@@ -79,12 +78,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bio_retrieve_fasta.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="bio_retrieve_fasta.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bio_retrieve_fasta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="145" column="0" selection-start="5285" selection-end="5285" vertical-scroll-proportion="0.6302521" vertical-offset="2025" max-vertical-offset="4650">
+            <state line="109" column="0" selection-start="4123" selection-end="4123" vertical-scroll-proportion="0.0" vertical-offset="1435" max-vertical-offset="4725">
               <folding>
-                <element signature="e#72#99#0" expanded="true" />
+                <element signature="e#143#152#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -93,7 +92,7 @@
       <file leaf-file-name="test.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="19" selection-start="52" selection-end="52" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="120">
+            <state line="2" column="19" selection-start="52" selection-end="52" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="120">
               <folding />
             </state>
           </provider>
@@ -110,6 +109,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="GitLogSettings">
+    <option name="myStructureFilterPaths" />
     <option name="myDateState">
       <MyDateState />
     </option>
@@ -118,10 +118,10 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/test.py" />
-        <option value="$PROJECT_DIR$/bio_parse_pdb_fasta.py" />
-        <option value="$PROJECT_DIR$/bio_conservation_mapping_fasta.py" />
         <option value="$PROJECT_DIR$/bio_output.py" />
         <option value="$PROJECT_DIR$/bio_retrieve_fasta.py" />
+        <option value="$PROJECT_DIR$/bio_conservation_mapping_fasta.py" />
+        <option value="$PROJECT_DIR$/bio_parse_pdb_fasta.py" />
       </list>
     </option>
   </component>
@@ -157,6 +157,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -177,7 +178,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -446,7 +446,11 @@
       <created>1403712147751</created>
       <updated>1403712147751</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="checkboxes output checked">
+      <created>1403712915417</created>
+      <updated>1403712915417</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -473,23 +477,23 @@
     <frame x="65" y="24" width="1301" height="744" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298639" sideWeight="0.5168919" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32850242" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3277027" sideWeight="0.49959967" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32850242" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32933652" sideWeight="0.6714976" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29303443" sideWeight="0.5168919" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3042434" sideWeight="0.6722973" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39864865" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24940048" sideWeight="0.42673108" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32850242" sideWeight="0.5003997" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.4831081" sideWeight="0.49960032" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3277027" sideWeight="0.5004003" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4831081" sideWeight="0.49960032" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298639" sideWeight="0.5168919" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -512,7 +516,8 @@
     </option>
     <MESSAGE value="output font" />
     <MESSAGE value="entropy ingebouwd" />
-    <option name="LAST_COMMIT_MESSAGE" value="entropy ingebouwd" />
+    <MESSAGE value="checkboxes output checked" />
+    <option name="LAST_COMMIT_MESSAGE" value="checkboxes output checked" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -530,9 +535,7 @@
     <entry file="file://$PROJECT_DIR$/bio_output.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <folding>
-            <element signature="e#21#30#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -549,7 +552,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
           <folding>
-            <element signature="e#72#99#0" expanded="true" />
+            <element signature="e#143#152#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -573,9 +576,7 @@
     <entry file="file://$PROJECT_DIR$/bio_output.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <folding>
-            <element signature="e#21#30#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -592,7 +593,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
           <folding>
-            <element signature="e#72#99#0" expanded="true" />
+            <element signature="e#143#152#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -604,28 +605,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bio_parse_pdb_fasta.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="90" column="36" selection-start="2739" selection-end="2739" vertical-scroll-proportion="-7.714286" vertical-offset="1080" max-vertical-offset="4470">
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/lib/python2.7/os.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="156" column="0" selection-start="4254" selection-end="4254" vertical-scroll-proportion="0.6312292" vertical-offset="2150" max-vertical-offset="11190">
-          <folding />
-        </state>
+        <state line="156" column="0" selection-start="4254" selection-end="4254" vertical-scroll-proportion="0.6312292" vertical-offset="2150" max-vertical-offset="11190" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bio_output.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2550">
-          <folding>
-            <element signature="e#21#30#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -636,20 +624,29 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/bio_retrieve_fasta.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="109" column="0" selection-start="4123" selection-end="4123" vertical-scroll-proportion="0.0" vertical-offset="1435" max-vertical-offset="4725">
+          <folding>
+            <element signature="e#143#152#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/bio_conservation_mapping_fasta.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="159" column="25" selection-start="5720" selection-end="5720" vertical-scroll-proportion="-64.28571" vertical-offset="135" max-vertical-offset="2745">
+        <state line="167" column="24" selection-start="6228" selection-end="6228" vertical-scroll-proportion="0.62857145" vertical-offset="2527" max-vertical-offset="2835">
           <folding>
             <element signature="e#0#52#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bio_retrieve_fasta.py">
+    <entry file="file://$PROJECT_DIR$/bio_parse_pdb_fasta.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="145" column="0" selection-start="5285" selection-end="5285" vertical-scroll-proportion="0.6302521" vertical-offset="2025" max-vertical-offset="4650">
+        <state line="122" column="12" selection-start="3751" selection-end="3751" vertical-scroll-proportion="-6.220339" vertical-offset="3665" max-vertical-offset="4500">
           <folding>
-            <element signature="e#72#99#0" expanded="true" />
+            <element signature="e#0#21#0" expanded="true" />
           </folding>
         </state>
       </provider>

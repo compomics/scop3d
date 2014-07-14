@@ -20,8 +20,6 @@ from weblogolib import *
 from bio_retrieve_fasta import muscle_loc
 
 
-
-
 bigest_amount_complete = []
 chains = ""
 list_positions = []
@@ -32,6 +30,8 @@ conversion_fail = ""
 class MyFrame1 ( wx.Frame ):
 
 	def __init__( self, parent ):
+        # choose the chains that must be adjusted, all the other chains are filled with arbitrary values,
+        # for better coloring.
 		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Scop3D - chains", pos = wx.DefaultPosition, size = wx.Size( 307,250 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
@@ -76,6 +76,7 @@ class MyFrame1 ( wx.Frame ):
 
 
 def bigest():
+    # get the highest abundant values.
     for list in procent_complete:
         smallest = 1
         amount_aa = 0
@@ -95,6 +96,7 @@ def bigest():
 
 
 def get_reference():
+    # get a list of all the chains in the fasta-file
     list_chains = []
     global list_unique_chains
     pdb = open(str(pdbfile), "r")

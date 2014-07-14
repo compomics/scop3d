@@ -1,16 +1,12 @@
-#input: pdb-file
-#output: sequence of the structure within the pdbfile
+#input: fasta-file with sequences of protein of interest
+#output: project-location directories with copy fasta file and info-file of project
 
-from Bio.PDB import PDBList
+
 import os
 import shutil
 import wx
 import wx.xrc
 from sys import platform as _platform
-#import bio_blast_pdb_fasta
-#import bio_parse_pdb_fasta
-#import bio_conservation_mapping_fasta
-
 
 
 spacer = ""
@@ -29,7 +25,7 @@ output4 = 0
 
 
 def operating_sys():
-    #check for linux
+    #check for operating system, to get the right spacer in path building.
     global spacer
     global win_platform
     if _platform == "linux" or _platform == "linux2":
@@ -44,7 +40,7 @@ def operating_sys():
 
 
 class Scop3D ( wx.Frame ):
-
+#class for gui frame
 	def __init__( self, parent ):
 		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Scop3D", pos = wx.DefaultPosition, size = wx.Size( 482,254 ), style = wx.DEFAULT_FRAME_STYLE )
 
@@ -63,6 +59,7 @@ class Scop3D ( wx.Frame ):
 		self.project_name = wx.TextCtrl( self.project, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
 		gSizer12.Add( self.project_name, 0, wx.ALL, 5 )
 
+		# location of fasta file with sequences
 		self.lbl_fasta_file = wx.StaticText( self.project, wx.ID_ANY, u"Fasta file:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.lbl_fasta_file.Wrap( -1 )
 		gSizer12.Add( self.lbl_fasta_file, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -70,6 +67,7 @@ class Scop3D ( wx.Frame ):
 		self.fastafile = wx.FilePickerCtrl( self.project, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gSizer12.Add( self.fastafile, 0, wx.ALL, 5 )
 
+		# location for project directory
 		self.lbl_output_loc = wx.StaticText( self.project, wx.ID_ANY, u"Output location:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.lbl_output_loc.Wrap( -1 )
 		gSizer12.Add( self.lbl_output_loc, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -91,6 +89,7 @@ class Scop3D ( wx.Frame ):
 		self.pdb = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		gSizer2 = wx.GridSizer( 4, 2, 0, 0 )
 
+		# define the pdb file used: own selection or blast.
 		self.lbl_pdb = wx.StaticText( self.pdb, wx.ID_ANY, u"Define pdb entry:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.lbl_pdb.Wrap( -1 )
 		gSizer2.Add( self.lbl_pdb, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -100,6 +99,7 @@ class Scop3D ( wx.Frame ):
 		self.define_pdb.SetSelection( 0 )
 		gSizer2.Add( self.define_pdb, 0, wx.ALL, 5 )
 
+        # if own selection required, select path to pdb.
 		self.lbl_pdb_loc = wx.StaticText( self.pdb, wx.ID_ANY, u"Location pdb", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.lbl_pdb_loc.Wrap( -1 )
 		gSizer2.Add( self.lbl_pdb_loc, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -127,6 +127,8 @@ class Scop3D ( wx.Frame ):
 		self.settings = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		gSizer5 = wx.GridSizer( 4, 2, 0, 0 )
 
+		# set value of the treshold for consensussequence building.
+		# AA with an abundance below this value will be replaced by a "-"
 		self.lbl_cons_tresh = wx.StaticText( self.settings, wx.ID_ANY, u"treshold consensusseq:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.lbl_cons_tresh.Wrap( -1 )
 		gSizer5.Add( self.lbl_cons_tresh, 0, wx.ALL, 5 )
@@ -135,7 +137,8 @@ class Scop3D ( wx.Frame ):
 		self.cons_tresh.SetMaxLength( 4 )
 		gSizer5.Add( self.cons_tresh, 0, wx.ALL, 5 )
 
-
+        # windows requires the complete path to muscle.exe.
+        # An .init file will be used in the final version.
 		if win_platform == "win":
 		    self.lbl_muscle_loc = wx.StaticText( self.settings, wx.ID_ANY, u"location muscle.exe:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		    self.lbl_muscle_loc.Wrap( -1 )
@@ -164,6 +167,7 @@ class Scop3D ( wx.Frame ):
 		self.output = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		gSizer3 = wx.GridSizer( 0, 2, 0, 0 )
 
+		# choose which output you don't require.
 		self.lbl_output = wx.StaticText( self.output, wx.ID_ANY, u"Output options", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.lbl_output.Wrap( -1 )
 		gSizer3.Add( self.lbl_output, 0, wx.ALL, 5 )
@@ -174,6 +178,8 @@ class Scop3D ( wx.Frame ):
         #
 		# gSizer3.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 
+		# A sequence logo is a graphical representation of an amino acid or nucleic acid multiple sequence alignment
+		# developed by Tom Schneider and Mike Stephens. (http://weblogo.threeplusone.com/)
 		self.output2 = wx.CheckBox( self.output, wx.ID_ANY, u"Sequence logo", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.output2.SetValue(True)
 		gSizer3.Add( self.output2, 0, wx.ALL, 5 )
@@ -181,6 +187,7 @@ class Scop3D ( wx.Frame ):
 
 		gSizer3.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 
+        # Color the 3D structure to procentual abundance of the most abundant AA for every position in the pdb file.
 		self.output3 = wx.CheckBox( self.output, wx.ID_ANY, u"pdb abundance", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.output3.SetValue(True)
 		gSizer3.Add( self.output3, 0, wx.ALL, 5 )
@@ -188,6 +195,7 @@ class Scop3D ( wx.Frame ):
 
 		gSizer3.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 
+		# Color the 3D structure to entropy (sum(p log2(p)) for every position in the pdb file.
 		self.output4 = wx.CheckBox( self.output, wx.ID_ANY, u"pdb Entropy", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.output4.SetValue(True)
 		gSizer3.Add( self.output4, 0, wx.ALL, 5 )
@@ -231,9 +239,8 @@ class Scop3D ( wx.Frame ):
 		pass
 
 
-	# Virtual event handlers, overide them in your derived class
 	def done( self, event ):
-            #getting location for output
+            #store the information gathered with GUI
             global project_name
             global project_dir
             global fasta_dir
@@ -242,7 +249,7 @@ class Scop3D ( wx.Frame ):
             global pdbfile
             global cons_tresh
             global muscle_loc
-            # global output1
+            global output1
             global output2
             global output3
             global output4
@@ -267,7 +274,7 @@ class Scop3D ( wx.Frame ):
             print "at this location", project_dir
             os.makedirs(project_dir)
 
-            #verplaatst fasta file naar project map onder project/fasta/
+            #copy fasta-file to this location: "project/fasta/".
             fasta_dir = project_dir + spacer + "fasta"
             os.makedirs(fasta_dir)
             fasta_name = project_name + ".fasta"
@@ -282,6 +289,7 @@ class Scop3D ( wx.Frame ):
 
 
 def write_info():
+    # write an info file with general project information.
     info_file= open(project_dir + spacer +"info.txt", "a")
     info_file.write("project: " + project_name + "\n")
     info_file.write("project_location: " + project_dir + "\n")
@@ -296,9 +304,6 @@ def main():
     MainApp = Scop3D(None)
     MainApp.Show()
     app.MainLoop()
-    #bio_conservation_mapping_fasta.conservation_mapping()
-    #bio_blast_pdb_fasta.to_blast()
-    #bio_parse_pdb_fasta.parse_pdb()
 
 
 main()

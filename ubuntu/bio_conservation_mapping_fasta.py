@@ -19,11 +19,13 @@ procent_complete = []
 entropy_position_list=[]
 
 def make_dir():
+    # make two directories: "project/alignments", "project/matrices/"
     os.makedirs(project_dir + spacer + "alignments")
     os.makedirs(project_dir + spacer + "matrices")
 
 
 def lenght_seq():
+    # check the length of all sequences in fasta-file (same length is preferred).
     fastafile = fasta_dir
     fasta = open(fastafile)
     length_seq = []
@@ -35,12 +37,13 @@ def lenght_seq():
             length_unique_seq.append(i)
     if len(length_unique_seq) != 1:
         info_file= open(project_dir + spacer +"info.txt", "a")
-        info_file.write("Warning: \n \t Not all seqeunces are of the same length. \n \t The non overlapping regions will be statistical less significant. "
+        info_file.write("Warning: \n \t Not all seqeunces are of the same length."
                         "\n \t differences in length: " + str(length_unique_seq))
         info_file.close()
 
 
 def alignment():
+    # align sequences with muscle, (http://www.drive5.com/muscle/)
     if muscle_loc:
         muscle_cline = MuscleCommandline(muscle_loc, input=file_ali_in, out=file_ali_out, clwstrict=True)
         muscle_cline()
@@ -50,6 +53,7 @@ def alignment():
     alignment = open(file_ali_out, "r")
     print_alignment = alignment.read()
     print print_alignment
+    alignment.close()
 
 
 def frequency():
@@ -57,18 +61,14 @@ def frequency():
     global frequency_matrix
     global aadict
     #read fasta file and detmine number of sequences.
-    #leern lijn per lijn
-    #summary_align = AlignInfo.SummaryInfo(file_ali_out)
     fasta_file = AlignIO.read(file_ali_out, "clustal")
     summary_align = AlignInfo.SummaryInfo(fasta_file)
     amount_seq = len(fasta_file)
 
-    #print fasta file
     for record in fasta_file:
         print record.seq, record.id
 
-    # make simple consensus sequence: if value is higher than threshold
-    #zoek treshhold waarde
+    # make simple consensus sequence with treshold value. gap is marked with "-"
     consensus = summary_align.dumb_consensus(cons_tresh, "-")
     print "\n", consensus
     info_file= open(project_dir + spacer +"info.txt", "a")
@@ -115,13 +115,13 @@ def frequency():
     global procent_complete
     global entropy_position_list
     procent_file = open(project_dir + spacer + "matrices" + spacer + "procent.csv", "a")
-    procent_file.write(str(aadict))
-    procent_file.write("\n")
+    procent_file.write(str(aadict) + "\n")
     procent_file.close()
+    entropy_file = open(project_dir + spacer + "matrices" + spacer + "entropy.csv", "a")
+    entropy_file.write(str(aadict) + "\n")
+    entropy_file.close()
     for number in lines:
         entropy_list=[]
-        entropy_num = 0
-        entropy_position = 0
         entropy_num = 0
         entropy_position = 0
         for AA in aadict:
@@ -133,7 +133,9 @@ def frequency():
             procent_line.append(procent)
 
             #entropy
+            # calculate p.
             quotient_entropy = frequency_matrix[number][AA]/entropy_num
+            # due to error with log2(0) if is needed.
             if quotient_entropy != 0:
                 log_entropy = math.log(quotient_entropy,2)
                 entropy = quotient_entropy * log_entropy
@@ -141,13 +143,14 @@ def frequency():
                 entropy_list.append(entropy)
             else:
                 entropy_list.append(0.000)
+        # set numbers to 3digits behind the comma.
         for entropy_item in entropy_list:
             entropy_position = float(entropy_position)
             entropy_position += float(entropy_item)
             entropy_position = float(entropy_position)
             entropy_position = "%.3f"%entropy_position
+        # make list of all entropy values.
         entropy_position_list.append(entropy_position)
-
 
         #write line to csv file
         print(procent_line)
@@ -160,10 +163,13 @@ def frequency():
         procent_line = []
         #starting new line
         n = 0
+    entropy_file = open(project_dir + spacer + "matrices" + spacer + "entropy.csv", "a")
+    entropy_file.write(str(entropy_position_list))
+    entropy_file.close()
     print entropy_position_list
-
-
     print procent_complete
+
+
 def conservation_mapping():
     make_dir()
     lenght_seq()
