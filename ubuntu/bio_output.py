@@ -1,8 +1,9 @@
 __author__ = 'stijn'
+# make the output GUI
+
 import wx
 import wx.xrc
 import wx.richtext
-from Bio import motifs
 import os
 from bio_retrieve_fasta import output2
 from bio_retrieve_fasta import output3
@@ -11,9 +12,12 @@ from bio_blast_pdb_fasta import project_dir
 from bio_retrieve_fasta import project_name
 from bio_blast_pdb_fasta import spacer
 from bio_parse_pdb_fasta import consensus
-from bio_parse_pdb_fasta import conversion_fail
+
+
 consensus = consensus
 file_info = open(project_dir + spacer + "info.txt", "r")
+
+# get all b-values of procentual abundance
 if output3 == 1:
     file_abundance=open(project_dir + spacer + "myOutfile_abundance.pdb", "r")
     abundance = "Lines of pdb containing C-alpha coordinates and the abundance: \n"
@@ -21,14 +25,18 @@ if output3 == 1:
         if line.startswith("ATOM") and "CA" in line:
             abundance += line
 
+# get all b-values of entropy
 if output4 == 1:
     file_amount=open(project_dir + spacer + "myOutfile_amount.pdb", "r")
     amount = "Lines of pdb containing C-alpha coordinates and the entropy: \n"
     for line in file_amount:
         if line.startswith("ATOM") and "CA" in line:
             amount += line
+
+# open info file
 info = file_info.read()
 
+# get consensus-sequence
 from Bio import SeqIO
 alignmentid = "record id:"
 alignmentseq = "record sequence:"

@@ -1,3 +1,6 @@
+# blast consensus sequence against pdb.
+
+
 import wx
 import wx.xrc
 import wx.richtext
@@ -51,7 +54,7 @@ class MyFrame1 ( wx.Frame ):
 		pass
 
 
-	# Virtual event handlers, overide them in your derived class
+	# open the my_blas.xml file
 	def done( self, event ):
             result_handle = NCBIWWW.qblast('blastp', 'pdb', consensus)
             print "bla"
@@ -70,6 +73,7 @@ def blast():
 
 
 def download_pdb():
+    # download the selected pdb file
     result_handle = open(project_dir + spacer + "my_blast.xml")
     blast_record = NCBIXML.read(result_handle)
     global choose_pdbChoices

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ee9ae540-3ed5-43cc-bc52-0010c64766bc" name="Default" comment="">
+    <list default="true" id="ee9ae540-3ed5-43cc-bc52-0010c64766bc" name="Default" comment="comments added for parse">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bio_blast_pdb_fasta.py" afterPath="$PROJECT_DIR$/bio_blast_pdb_fasta.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bio_output.py" afterPath="$PROJECT_DIR$/bio_output.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ubuntu.iws" />
@@ -35,11 +37,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="bio_blast_pdb_fasta.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="bio_blast_pdb_fasta.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bio_blast_pdb_fasta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="1" column="0" selection-start="10" selection-end="10" vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="2640">
-              <folding />
+            <state line="119" column="49" selection-start="3800" selection-end="3800" vertical-scroll-proportion="-1.0469799" vertical-offset="2253" max-vertical-offset="2700">
+              <folding>
+                <element signature="e#42#51#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -56,16 +60,18 @@
       <file leaf-file-name="bio_output.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bio_output.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2550">
-              <folding />
+            <state line="172" column="6" selection-start="8066" selection-end="8066" vertical-scroll-proportion="0.0" vertical-offset="2163" max-vertical-offset="2670">
+              <folding>
+                <element signature="e#44#53#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bio_parse_pdb_fasta.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="bio_parse_pdb_fasta.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bio_parse_pdb_fasta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="279" column="73" selection-start="10755" selection-end="10755" vertical-scroll-proportion="-0.30872482" vertical-offset="4323" max-vertical-offset="4770">
+            <state line="279" column="73" selection-start="10755" selection-end="10755" vertical-scroll-proportion="0.0" vertical-offset="4323" max-vertical-offset="4770">
               <folding>
                 <element signature="e#0#21#0" expanded="true" />
               </folding>
@@ -111,10 +117,11 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/test.py" />
-        <option value="$PROJECT_DIR$/bio_output.py" />
         <option value="$PROJECT_DIR$/bio_retrieve_fasta.py" />
         <option value="$PROJECT_DIR$/bio_conservation_mapping_fasta.py" />
         <option value="$PROJECT_DIR$/bio_parse_pdb_fasta.py" />
+        <option value="$PROJECT_DIR$/bio_output.py" />
+        <option value="$PROJECT_DIR$/bio_blast_pdb_fasta.py" />
       </list>
     </option>
   </component>
@@ -447,7 +454,11 @@
       <created>1405439979202</created>
       <updated>1405439979202</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="checkboxes output checked">
+      <created>1405439986032</created>
+      <updated>1405439986032</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -530,7 +541,9 @@
     <entry file="file://$PROJECT_DIR$/bio_output.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <folding />
+          <folding>
+            <element signature="e#44#53#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -553,7 +566,9 @@
     <entry file="file://$PROJECT_DIR$/bio_blast_pdb_fasta.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <folding />
+          <folding>
+            <element signature="e#42#51#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -567,7 +582,9 @@
     <entry file="file://$PROJECT_DIR$/bio_output.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <folding />
+          <folding>
+            <element signature="e#44#53#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -599,20 +616,6 @@
         <state line="156" column="0" selection-start="4254" selection-end="4254" vertical-scroll-proportion="0.6312292" vertical-offset="2150" max-vertical-offset="11190" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bio_output.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2550">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bio_blast_pdb_fasta.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="0" selection-start="10" selection-end="10" vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="2640">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bio_retrieve_fasta.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="109" column="0" selection-start="4123" selection-end="4123" vertical-scroll-proportion="0.0" vertical-offset="1435" max-vertical-offset="4725">
@@ -629,9 +632,27 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bio_parse_pdb_fasta.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="279" column="73" selection-start="10755" selection-end="10755" vertical-scroll-proportion="-0.30872482" vertical-offset="4323" max-vertical-offset="4770">
+        <state line="279" column="73" selection-start="10755" selection-end="10755" vertical-scroll-proportion="0.0" vertical-offset="4323" max-vertical-offset="4770">
           <folding>
             <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bio_output.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="172" column="6" selection-start="8066" selection-end="8066" vertical-scroll-proportion="0.0" vertical-offset="2163" max-vertical-offset="2670">
+          <folding>
+            <element signature="e#44#53#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bio_blast_pdb_fasta.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="119" column="49" selection-start="3800" selection-end="3800" vertical-scroll-proportion="-1.0469799" vertical-offset="2253" max-vertical-offset="2700">
+          <folding>
+            <element signature="e#42#51#0" expanded="true" />
           </folding>
         </state>
       </provider>
