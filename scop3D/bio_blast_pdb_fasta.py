@@ -18,6 +18,7 @@ pdbfile = pdbfile
 row = ""
 choose_pdbChoices = []
 
+
 class MyFrame1 ( wx.Frame ):
 
 	def __init__( self, parent ):
