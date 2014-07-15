@@ -76,11 +76,12 @@ class MyFrame1 ( wx.Frame ):
 
 
 def bigest():
-    # get the highest abundant values.
+    # get the highest abundance values.
     for list in procent_complete:
         smallest = 1
         amount_aa = 0
         for item in list:
+            # which value is the smallest (bigest abundance due to 1-conservation necessary for coloring)
             if smallest > item:
                 item = item
                 smallest = item
@@ -115,6 +116,8 @@ def get_reference():
 
 
 def get_alignment(chain):
+    # pairwise alignment between pdb-chain of a certain chain and the consensus sequence (determining which position should be changed).
+    # first getting the chain-sequence from pdb
     parser=PDBParser()
     structure=parser.get_structure("bla", pdbfile)
     ppb=CaPPBuilder()
@@ -124,10 +127,13 @@ def get_alignment(chain):
     for pp in ppb.build_peptides(chaint):
         seq_temp = pp.get_sequence()
         seq += seq_temp
+    # printing this chain-sequence
     print str(seq)
+    # write a temporary fasta-file as input for muscle with this two sequences.
     pairwise_aln = open(project_dir + spacer + "fasta_cons_" + str(chain) + ".fasta", "w")
     pairwise_aln.write(">consensus \n" + str(consensus) + "\n" + ">sequence " + str(chain) + "\n" + str(seq))
     pairwise_aln.close()
+    # muscle alignment
     if muscle_loc:
         muscle_cline = MuscleCommandline(muscle_loc, input=project_dir + spacer + "fasta_cons_" + str(chain) + ".fasta", out=project_dir + spacer + "pairwise_aln_cons_" + str(chain) + ".clw", clwstrict=True)
         muscle_cline()
@@ -140,18 +146,18 @@ def get_alignment(chain):
         seq = str(record.seq)
         seq_alignment.append(seq)
     handle.close()
-    print len(seq_alignment[0])
-    print len(seq_alignment[1])
     print seq_alignment
     return seq_alignment
 
 
 def get_positions(chain):
+    # get the positions in pdb-chain that should be changed for each chain.
     bigest_amount_complete = bigest()
     alignment = get_alignment(chain)
     global list_positions
     list_positions = []
     pdb = open(str(pdbfile), "r")
+    # make a list of all positions included in pdb (checking for double entries and deletions, insertions).
     for lines in pdb:
         if lines[0:4] == "ATOM" and lines[21] == chain:
             if lines[13:15] == "CA":
@@ -164,6 +170,9 @@ def get_positions(chain):
             list_unique_positions.append(i)
     print list_unique_positions
     print len(bigest_amount_complete)
+    # after pairwise alignment insertions can happen in consensus and pdb-sequence: here we search these positions.
+    # if there are gaps added in consensus sequence we add an arbitrary value to bigest_amount_complete
+    # if gaps added in pdb-sequence we remove these values from bigest_amount_complete.
     bigest_alignment = []
     y = 0
     z = 0
@@ -183,6 +192,7 @@ def get_positions(chain):
                     bigest_alignment.append(bigest_amount_complete[z])
                     y += 1
                     z += 1
+    # if gaps added at the end of pdb sequence add arbitrary values.
     if len(alignment[0]) != len(bigest_alignment):
         end_gaps = len(alignment[0])-len(bigest_alignment)
         print end_gaps
@@ -190,9 +200,11 @@ def get_positions(chain):
             bigest_alignment.append([0.5, 1.0, "T"])
     print bigest_alignment
     position_align = []
+    # get locations of "-" added in pdb-sequence
     for position, item in enumerate(alignment[1]):
         if item == "-":
             position_align.append(position)
+    # remove the values from bigest_alignment
     for i in reversed(position_align):
         del (bigest_alignment[i])
     print bigest_alignment
@@ -203,6 +215,7 @@ def get_positions(chain):
 
 def make_outputpdb(name, outputtype):
     shutil.copyfile(str(pdbfile), str(pdbfile + name))
+    # adjust the b-values only on the chains that need to be adjusted
     for chain in chains:
         bigest_amount_complete = get_positions(chain)
         n = 0
@@ -213,11 +226,13 @@ def make_outputpdb(name, outputtype):
             if len(myPDBline) >= 21:
                 if myPDBline[0:4] == ("ATOM") and myPDBline[21] == chain:
                     position = myPDBline[23:26]
+                    # change all b-values of atoms per position
                     if list_unique_positions[x] == position:
                         myBfactor = myPDBline[60:66].strip()
                         print(myBfactor)
                         print(myPDBline[:60]+"  "+str(bigest_amount_complete[n][outputtype])+myPDBline[66:])
                         myOutfile.write(myPDBline[:60]+"  "+str(bigest_amount_complete[n][outputtype])+myPDBline[66:])
+                    # go to next position
                     else:
                         n += 1
                         print(myPDBline[:60]+"  "+str(bigest_amount_complete[n][outputtype])+myPDBline[66:])
@@ -235,6 +250,7 @@ def make_outputpdb(name, outputtype):
 
 
 def pdb_cleanup(name, output):
+    # change all other chains b-values to arbitrary values
     pdb = open(str(pdbfile + name), "r")
     myOutfile = open(str(project_dir + spacer + "myOutfile_"+ name + ".pdb"), "w")
     for myPDBline in pdb:
@@ -249,6 +265,7 @@ def pdb_cleanup(name, output):
     pdb.close()
 
 def sequence_logo():
+    # create sequence logo with weblogo
     fin = open(project_dir + spacer + "alignments" + spacer + "alignment_" + project_name + ".clw")
     seqs = read_seq_data(fin)
     data = LogoData.from_seqs(seqs)
@@ -260,6 +277,7 @@ def sequence_logo():
     fout.write(eps)
 
 def convert():
+    # convert eps to png (only possible in linux, windows will be added).
     input = project_dir + spacer + "sequence_logo.eps "
     output = project_dir + spacer + "sequence_logo.png "
     cmd = 'convert ' + input + output
