@@ -75,7 +75,7 @@ def frequency():
     info_file.write("\n consensus sequence: \n" + str(consensus))
     info_file.close()
 
-    # establish the abundance of a certain protein at each position in consensus sequence.
+    # establish the abundance of a certain residue at each position in consensus sequence.
     frequency_matrix = summary_align.pos_specific_score_matrix(consensus)
     frequency_matrix_str = str(frequency_matrix)
     print frequency_matrix_str

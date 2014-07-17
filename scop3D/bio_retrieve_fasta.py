@@ -18,6 +18,7 @@ pdbfile = ""
 cons_tresh = ""
 win_platform = ""
 muscle_loc = ""
+ccp4mg_loc = ""
 output1 = 0
 output2 = 0
 output3 = 0
@@ -148,12 +149,17 @@ class Scop3D ( wx.Frame ):
 		    gSizer5.Add( self.muscle_loc, 0, wx.ALL, 5 )
 
 
-		gSizer5.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
+		self.lbl_ccp4mg_loc = wx.StaticText( self.settings, wx.ID_ANY, u"select ccp4mg directory:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.lbl_ccp4mg_loc.Wrap( -1 )
+		gSizer5.Add( self.lbl_ccp4mg_loc, 0, wx.ALL, 5 )
+
+		self.ccp4mg_loc = wx.DirPickerCtrl( self.settings, wx.ID_ANY, wx.EmptyString, u"Select ccp4mg directory", wx.DefaultPosition, wx.DefaultSize, wx.DIRP_DEFAULT_STYLE )
+		gSizer5.Add( self.ccp4mg_loc, 0, wx.ALL, 5 )
 
 
-		gSizer5.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
-
-
+		if win_platform != "win":
+		    gSizer5.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
+		    gSizer5.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 		gSizer5.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
 
 
@@ -249,6 +255,7 @@ class Scop3D ( wx.Frame ):
             global pdbfile
             global cons_tresh
             global muscle_loc
+            global ccp4mg_loc
             global output1
             global output2
             global output3
@@ -259,6 +266,7 @@ class Scop3D ( wx.Frame ):
             fastafile = self.fastafile.GetPath()
             if win_platform == "win":
                 muscle_loc = self.muscle_loc.GetPath()
+            ccp4mg_loc = self.ccp4mg_loc.GetPath()
             project_dir = output_loc + spacer + project_name
             define_pdb = self.define_pdb.GetCurrentSelection()
             pdbfile = self.pdb_loc.GetPath()

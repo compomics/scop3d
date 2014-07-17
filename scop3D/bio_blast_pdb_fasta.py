@@ -30,7 +30,7 @@ class MyFrame1 ( wx.Frame ):
 
 		gSizer3 = wx.GridSizer( 1, 1, 0, 0 )
 
-		self.m_richText2 = wx.richtext.RichTextCtrl( self, wx.ID_ANY, "Press blast to blast this sequence \n\n" + str(consensus), wx.DefaultPosition, wx.DefaultSize, 0|wx.VSCROLL|wx.HSCROLL|wx.NO_BORDER|wx.WANTS_CHARS )
+		self.m_richText2 = wx.richtext.RichTextCtrl( self, wx.ID_ANY, "Blast the consensus sequence \n\n" + str(consensus), wx.DefaultPosition, wx.DefaultSize, 0|wx.VSCROLL|wx.HSCROLL|wx.NO_BORDER|wx.WANTS_CHARS )
 		gSizer3.Add( self.m_richText2, 1, wx.EXPAND |wx.ALL, 5 )
 
 
