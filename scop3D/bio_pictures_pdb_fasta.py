@@ -1,9 +1,11 @@
 import os
+import shutil
 from bio_parse_pdb_fasta import project_dir
 from bio_parse_pdb_fasta import spacer
 from bio_retrieve_fasta import ccp4mg_loc
 from bio_retrieve_fasta import output3
 from bio_retrieve_fasta import output4
+from bio_retrieve_fasta import win_platform
 
 name = ""
 
@@ -384,18 +386,32 @@ view = View (
         picture1.close()
 
 def execute_code(code, name):
-    if name == "myOutfile_abundance.pdb":
-        cmd = ccp4mg_loc + spacer + "bin" + spacer + "ccp4mg"+ " -norestore -picture " + project_dir + spacer + "Pictures" + spacer + "tmp" + spacer + code + ".mgpic.py" + " -R " + project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + code + ".png" + " -quit"
-        os.system(cmd)
-    if name == "myOutfile_amount.pdb":
-        cmd = ccp4mg_loc + spacer + "bin" + spacer + "ccp4mg"+ " -norestore -picture " + project_dir + spacer + "Pictures" + spacer + "tmp" + spacer + code + ".mgpic.py" + " -R " + project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + code + ".png" + " -quit"
-        os.system(cmd)
+    if win_platform == False:
+        if name == "myOutfile_abundance.pdb":
+            cmd = ccp4mg_loc + spacer + "bin" + spacer + "ccp4mg"+ " -norestore -picture " + project_dir + spacer + "Pictures" + spacer + "tmp" + spacer + code + ".mgpic.py" + " -R " + project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + code + ".png" + " -quit"
+            os.system(cmd)
+        if name == "myOutfile_amount.pdb":
+            cmd = ccp4mg_loc + spacer + "bin" + spacer + "ccp4mg"+ " -norestore -picture " + project_dir + spacer + "Pictures" + spacer + "tmp" + spacer + code + ".mgpic.py" + " -R " + project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + code + ".png" + " -quit"
+            os.system(cmd)
+    elif win_platform:
+        if name == "myOutfile_abundance.pdb":
+            ccmp4g_loc = ccp4mg_loc + spacer + "winccp4mg.exe"
+            code_in = project_dir + spacer + "Pictures" + spacer + "tmp" + spacer + code + ".mgpic.py"
+            pic_out = project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + code + ".png"
+            os.system("\"" + ccmp4g_loc + "\"" + " -norestore -picture " + code_in + " -R " + pic_out + " -quit")
+        if name == "myOutfile_amount.pdb":
+            ccmp4g_loc = ccp4mg_loc + spacer + "winccp4mg.exe"
+            code_in = project_dir + spacer + "Pictures" + spacer + "tmp" + spacer + code + ".mgpic.py"
+            pic_out = project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + code + ".png"
+            os.system("\"" + ccmp4g_loc + "\"" + " -norestore -picture " + code_in + " -R " + pic_out + " -quit")
 
 def main():
     names = []
     global name
     os.makedirs(project_dir + spacer + "Pictures")
     os.makedirs(project_dir + spacer + "Pictures" + spacer + "tmp")
+    shutil.copy(project_dir + spacer + "myOutfile_abundance.pdb", project_dir + spacer + "Pictures" + spacer + "tmp")
+    shutil.copy(project_dir + spacer + "myOutfile_amount.pdb", project_dir + spacer + "Pictures" + spacer + "tmp")
     if output3 == 1 and output4 == 1:
         names = ["myOutfile_abundance.pdb", "myOutfile_amount.pdb"]
     elif output3 == 1:
