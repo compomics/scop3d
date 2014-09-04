@@ -78,7 +78,7 @@ class MyFrame1 ( wx.Frame ):
 def bigest():
     # get the highest abundance values.
     for list in procent_complete:
-        smallest = 1
+        smallest = 100
         amount_aa = 0
         for item in list:
             # which value is the smallest (bigest abundance due to 1-conservation necessary for coloring)
@@ -86,7 +86,7 @@ def bigest():
                 item = item
                 smallest = item
         smallest = float(smallest)
-        smallest = "%.3f"%smallest
+        smallest = "%.2f"%smallest
         bigest_amount_complete.append([smallest])
     print (bigest_amount_complete)
     print len(bigest_amount_complete)
@@ -256,9 +256,9 @@ def pdb_cleanup(name, output):
     for myPDBline in pdb:
         if myPDBline.startswith("ATOM") and myPDBline[21] not in chains:
             if output == "output3":
-                myOutfile.write(myPDBline[:60]+ '  0.500' + myPDBline[66:])
+                myOutfile.write(myPDBline[:60]+ '  50.00' + myPDBline[66:])
             if output == "output4":
-                myOutfile.write(myPDBline[:60]+ '  1.000' + myPDBline[66:])
+                myOutfile.write(myPDBline[:60]+ '  100.0' + myPDBline[66:])
         else:
             myOutfile.write(myPDBline)
     myOutfile.close()

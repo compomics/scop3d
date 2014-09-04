@@ -129,7 +129,7 @@ def frequency():
 
         for AA in aadict:
             #abundance
-            procent = 1 - (frequency_matrix[number][AA] / amount_seq)
+            procent = (1 - (frequency_matrix[number][AA] / amount_seq))*100
             procent_line.append(procent)
 
             #entropy
@@ -140,6 +140,7 @@ def frequency():
                 log_entropy = math.log(quotient_entropy,2)
                 entropy = quotient_entropy * log_entropy
                 entropy = math.fabs(entropy)
+                entropy = entropy
                 entropy_list.append(entropy)
             else:
                 entropy_list.append(0.000)
@@ -147,9 +148,11 @@ def frequency():
         for entropy_item in entropy_list:
             entropy_position = float(entropy_position)
             entropy_position += float(entropy_item)
-            entropy_position = float(entropy_position)
-            entropy_position = "%.3f"%entropy_position
         # make list of all entropy values.
+        entropy_position = float(entropy_position)
+        entropy_position = entropy_position * 100
+        entropy_position = float(entropy_position)
+        entropy_position = "%.2f"%entropy_position
         entropy_position_list.append(entropy_position)
 
         #write line to csv file
