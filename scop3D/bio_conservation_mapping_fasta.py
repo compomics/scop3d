@@ -18,6 +18,7 @@ consensus = ""
 procent_complete = []
 entropy_position_list=[]
 
+
 def make_dir():
     # make two directories: "project/alignments", "project/matrices/"
     os.makedirs(project_dir + spacer + "alignments")
@@ -69,7 +70,7 @@ def frequency():
         print record.seq, record.id
 
     # make simple consensus sequence with treshold value. gap is marked with "-"
-    consensus = summary_align.dumb_consensus(cons_tresh, "-")
+    consensus = summary_align.dumb_consensus(ambiguous="-", threshold=cons_tresh)
     print "\n", consensus
     info_file= open(project_dir + spacer +"info.txt", "a")
     info_file.write("\n consensus sequence: \n" + str(consensus))
@@ -149,6 +150,8 @@ def frequency():
             entropy_position = float(entropy_position)
             entropy_position += float(entropy_item)
         # make list of all entropy values.
+        log_number_aa = math.log(number_aa,2)
+        entropy_position = entropy_position / log_number_aa
         entropy_position = float(entropy_position)
         entropy_position = entropy_position * 100
         entropy_position = float(entropy_position)
