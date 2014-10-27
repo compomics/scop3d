@@ -12,6 +12,8 @@ from bio_blast_pdb_fasta import project_dir
 from bio_retrieve_fasta import project_name
 from bio_parse_pdb_fasta import consensus
 from bio_pictures_pdb_fasta import spacer
+from sys import platform as _platform
+
 
 
 consensus = consensus
@@ -145,67 +147,69 @@ class Scop3D ( wx.Frame ):
 		    self.notebook_1.AddPage( self.notebook_1_pane_5, u"seq_logo", False )
 
 
-		self.pictures_abundance = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		gSizer7 = wx.GridSizer( 3, 2, 0, 0 )
-		self.code0_abu = wx.Image(project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + "code0.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-		self.m_code0_abu = wx.StaticBitmap(self.pictures_abundance, -1, self.code0_abu, (10, 5), (self.code0_abu.GetWidth(), self.code0_abu.GetHeight()))
-		gSizer7.Add( self.m_code0_abu, 0, wx.ALL, 5 )
 
-		self.code1_abu = wx.Image(project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + "code1.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-		self.m_code1_abu = wx.StaticBitmap(self.pictures_abundance, -1, self.code1_abu, (10, 5), (self.code1_abu.GetWidth(), self.code1_abu.GetHeight()))
-		gSizer7.Add( self.m_code1_abu, 0, wx.ALL, 5 )
+		if _platform != "darwin":
+		    self.pictures_abundance = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		    gSizer7 = wx.GridSizer( 3, 2, 0, 0 )
+		    self.code0_abu = wx.Image(project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + "code0.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+		    self.m_code0_abu = wx.StaticBitmap(self.pictures_abundance, -1, self.code0_abu, (10, 5), (self.code0_abu.GetWidth(), self.code0_abu.GetHeight()))
+		    gSizer7.Add( self.m_code0_abu, 0, wx.ALL, 5 )
 
-		self.code2_abu = wx.Image(project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + "code2.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-		self.m_code2_abu = wx.StaticBitmap(self.pictures_abundance, -1, self.code2_abu, (10, 5), (self.code2_abu.GetWidth(), self.code2_abu.GetHeight()))
-		gSizer7.Add( self.m_code2_abu, 0, wx.ALL, 5 )
+		    self.code1_abu = wx.Image(project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + "code1.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+		    self.m_code1_abu = wx.StaticBitmap(self.pictures_abundance, -1, self.code1_abu, (10, 5), (self.code1_abu.GetWidth(), self.code1_abu.GetHeight()))
+		    gSizer7.Add( self.m_code1_abu, 0, wx.ALL, 5 )
 
-		self.code3_abu = wx.Image(project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + "code3.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-		self.m_code3_abu = wx.StaticBitmap(self.pictures_abundance, -1, self.code3_abu, (10, 5), (self.code3_abu.GetWidth(), self.code3_abu.GetHeight()))
-		gSizer7.Add( self.m_code3_abu, 0, wx.ALL, 5 )
+		    self.code2_abu = wx.Image(project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + "code2.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+		    self.m_code2_abu = wx.StaticBitmap(self.pictures_abundance, -1, self.code2_abu, (10, 5), (self.code2_abu.GetWidth(), self.code2_abu.GetHeight()))
+		    gSizer7.Add( self.m_code2_abu, 0, wx.ALL, 5 )
 
-		self.code4_abu = wx.Image(project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + "code4.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-		self.m_code4_abu = wx.StaticBitmap(self.pictures_abundance, -1, self.code4_abu, (10, 5), (self.code4_abu.GetWidth(), self.code4_abu.GetHeight()))
-		gSizer7.Add( self.m_code4_abu, 0, wx.ALL, 5 )
+		    self.code3_abu = wx.Image(project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + "code3.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+		    self.m_code3_abu = wx.StaticBitmap(self.pictures_abundance, -1, self.code3_abu, (10, 5), (self.code3_abu.GetWidth(), self.code3_abu.GetHeight()))
+		    gSizer7.Add( self.m_code3_abu, 0, wx.ALL, 5 )
 
-		self.code5_abu = wx.Image(project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + "code5.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-		self.m_code5_abu = wx.StaticBitmap(self.pictures_abundance, -1, self.code5_abu, (10, 5), (self.code5_abu.GetWidth(), self.code5_abu.GetHeight()))
-		gSizer7.Add( self.m_code5_abu, 0, wx.ALL, 5 )
+		    self.code4_abu = wx.Image(project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + "code4.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+		    self.m_code4_abu = wx.StaticBitmap(self.pictures_abundance, -1, self.code4_abu, (10, 5), (self.code4_abu.GetWidth(), self.code4_abu.GetHeight()))
+		    gSizer7.Add( self.m_code4_abu, 0, wx.ALL, 5 )
 
-		self.pictures_abundance.SetSizer( gSizer7 )
-		self.pictures_abundance.Layout()
-		gSizer7.Fit( self.pictures_abundance )
-		self.notebook_1.AddPage( self.pictures_abundance, u"pictures abundance", False )
+		    self.code5_abu = wx.Image(project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + "code5.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+		    self.m_code5_abu = wx.StaticBitmap(self.pictures_abundance, -1, self.code5_abu, (10, 5), (self.code5_abu.GetWidth(), self.code5_abu.GetHeight()))
+		    gSizer7.Add( self.m_code5_abu, 0, wx.ALL, 5 )
 
-		self.pictures_entropy = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		gSizer8 = wx.GridSizer( 3, 2, 0, 0 )
-		self.code0_ent = wx.Image(project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + "code0.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-		self.m_code0_ent = wx.StaticBitmap(self.pictures_entropy, -1, self.code0_ent, (10, 5), (self.code0_ent.GetWidth(), self.code0_ent.GetHeight()))
-		gSizer8.Add( self.m_code0_ent, 0, wx.ALL, 5 )
+		    self.pictures_abundance.SetSizer( gSizer7 )
+		    self.pictures_abundance.Layout()
+		    gSizer7.Fit( self.pictures_abundance )
+		    self.notebook_1.AddPage( self.pictures_abundance, u"pictures abundance", False )
 
-		self.code1_ent = wx.Image(project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + "code1.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-		self.m_code1_ent = wx.StaticBitmap(self.pictures_entropy, -1, self.code1_ent, (10, 5), (self.code1_ent.GetWidth(), self.code1_ent.GetHeight()))
-		gSizer8.Add( self.m_code1_ent, 0, wx.ALL, 5 )
+		    self.pictures_entropy = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		    gSizer8 = wx.GridSizer( 3, 2, 0, 0 )
+		    self.code0_ent = wx.Image(project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + "code0.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+		    self.m_code0_ent = wx.StaticBitmap(self.pictures_entropy, -1, self.code0_ent, (10, 5), (self.code0_ent.GetWidth(), self.code0_ent.GetHeight()))
+		    gSizer8.Add( self.m_code0_ent, 0, wx.ALL, 5 )
 
-		self.code2_ent = wx.Image(project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + "code2.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-		self.m_code2_ent = wx.StaticBitmap(self.pictures_entropy, -1, self.code2_ent, (10, 5), (self.code2_ent.GetWidth(), self.code2_ent.GetHeight()))
-		gSizer8.Add( self.m_code2_ent, 0, wx.ALL, 5 )
+		    self.code1_ent = wx.Image(project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + "code1.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+		    self.m_code1_ent = wx.StaticBitmap(self.pictures_entropy, -1, self.code1_ent, (10, 5), (self.code1_ent.GetWidth(), self.code1_ent.GetHeight()))
+		    gSizer8.Add( self.m_code1_ent, 0, wx.ALL, 5 )
 
-		self.code3_ent = wx.Image(project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + "code3.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-		self.m_code3_ent = wx.StaticBitmap(self.pictures_entropy, -1, self.code3_ent, (10, 5), (self.code3_ent.GetWidth(), self.code3_ent.GetHeight()))
-		gSizer8.Add( self.m_code3_ent, 0, wx.ALL, 5 )
+		    self.code2_ent = wx.Image(project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + "code2.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+		    self.m_code2_ent = wx.StaticBitmap(self.pictures_entropy, -1, self.code2_ent, (10, 5), (self.code2_ent.GetWidth(), self.code2_ent.GetHeight()))
+		    gSizer8.Add( self.m_code2_ent, 0, wx.ALL, 5 )
 
-		self.code4_ent = wx.Image(project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + "code4.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-		self.m_code4_ent = wx.StaticBitmap(self.pictures_entropy, -1, self.code4_ent, (10, 5), (self.code4_ent.GetWidth(), self.code4_ent.GetHeight()))
-		gSizer8.Add( self.m_code4_ent, 0, wx.ALL, 5 )
+		    self.code3_ent = wx.Image(project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + "code3.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+		    self.m_code3_ent = wx.StaticBitmap(self.pictures_entropy, -1, self.code3_ent, (10, 5), (self.code3_ent.GetWidth(), self.code3_ent.GetHeight()))
+		    gSizer8.Add( self.m_code3_ent, 0, wx.ALL, 5 )
 
-		self.code5_ent = wx.Image(project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + "code5.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-		self.m_code5_ent = wx.StaticBitmap(self.pictures_entropy, -1, self.code5_ent, (10, 5), (self.code5_ent.GetWidth(), self.code5_ent.GetHeight()))
-		gSizer8.Add( self.m_code5_ent, 0, wx.ALL, 5 )
+		    self.code4_ent = wx.Image(project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + "code4.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+		    self.m_code4_ent = wx.StaticBitmap(self.pictures_entropy, -1, self.code4_ent, (10, 5), (self.code4_ent.GetWidth(), self.code4_ent.GetHeight()))
+		    gSizer8.Add( self.m_code4_ent, 0, wx.ALL, 5 )
 
-		self.pictures_entropy.SetSizer( gSizer8 )
-		self.pictures_entropy.Layout()
-		gSizer8.Fit( self.pictures_entropy )
-		self.notebook_1.AddPage( self.pictures_entropy, u"pictures entropy", False )
+		    self.code5_ent = wx.Image(project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + "code5.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+		    self.m_code5_ent = wx.StaticBitmap(self.pictures_entropy, -1, self.code5_ent, (10, 5), (self.code5_ent.GetWidth(), self.code5_ent.GetHeight()))
+		    gSizer8.Add( self.m_code5_ent, 0, wx.ALL, 5 )
+
+		    self.pictures_entropy.SetSizer( gSizer8 )
+		    self.pictures_entropy.Layout()
+		    gSizer8.Fit( self.pictures_entropy )
+		    self.notebook_1.AddPage( self.pictures_entropy, u"pictures entropy", False )
 
 		# self.notebook_1_pane_6 = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		# self.notebook_1.AddPage( self.notebook_1_pane_6, u"6", False )

@@ -139,31 +139,26 @@ class Scop3D ( wx.Frame ):
 		gSizer5.Add( self.cons_tresh, 0, wx.ALL, 5 )
 
         # windows requires the complete path to muscle.exe.
-        # An .init file will be used in the final version.
-		if win_platform == "win":
-		    self.lbl_muscle_loc = wx.StaticText( self.settings, wx.ID_ANY, u"location muscle.exe:", wx.DefaultPosition, wx.DefaultSize, 0 )
-		    self.lbl_muscle_loc.Wrap( -1 )
-		    gSizer5.Add( self.lbl_muscle_loc, 0, wx.ALL, 5 )
+        # An .init file will be used in the final version
+		self.lbl_muscle_loc = wx.StaticText( self.settings, wx.ID_ANY, u"location muscle.exe:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.lbl_muscle_loc.Wrap( -1 )
+		gSizer5.Add( self.lbl_muscle_loc, 0, wx.ALL, 5 )
 
-		    self.muscle_loc = wx.FilePickerCtrl( self.settings, wx.ID_ANY, wx.EmptyString, u"Select muscle.exe", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
-		    gSizer5.Add( self.muscle_loc, 0, wx.ALL, 5 )
+		self.muscle_loc = wx.FilePickerCtrl( self.settings, wx.ID_ANY, wx.EmptyString, u"Select muscle.exe", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		gSizer5.Add( self.muscle_loc, 0, wx.ALL, 5 )
 
 
 		self.lbl_ccp4mg_loc = wx.StaticText( self.settings, wx.ID_ANY, u"select ccp4mg directory:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.lbl_ccp4mg_loc.Wrap( -1 )
 		gSizer5.Add( self.lbl_ccp4mg_loc, 0, wx.ALL, 5 )
 
-		self.ccp4mg_loc = wx.DirPickerCtrl( self.settings, wx.ID_ANY, wx.EmptyString, u"Select ccp4mg directory", wx.DefaultPosition, wx.DefaultSize, wx.DIRP_DEFAULT_STYLE )
-		gSizer5.Add( self.ccp4mg_loc, 0, wx.ALL, 5 )
 
-
-		if win_platform != "win":
-		    gSizer5.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
-		    gSizer5.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
-		gSizer5.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
-
-
-		gSizer5.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
+		if _platform == "darwin":
+		    self.ccp4mg_loc = wx.FilePickerCtrl( self.settings, wx.ID_ANY, wx.EmptyString, u"Select ccp4mg file", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		    gSizer5.Add( self.ccp4mg_loc, 0, wx.ALL, 5 )
+		if _platform != "darwin":
+		    self.ccp4mg_loc = wx.DirPickerCtrl( self.settings, wx.ID_ANY, wx.EmptyString, u"Select ccp4mg directory", wx.DefaultPosition, wx.DefaultSize, wx.DIRP_DEFAULT_STYLE )
+		    gSizer5.Add( self.ccp4mg_loc, 0, wx.ALL, 5 )
 
 
 		self.settings.SetSizer( gSizer5 )
@@ -264,8 +259,7 @@ class Scop3D ( wx.Frame ):
             project_name = self.project_name.GetValue()
             output_loc = self.output_loc.GetPath()
             fastafile = self.fastafile.GetPath()
-            if win_platform == "win":
-                muscle_loc = self.muscle_loc.GetPath()
+            muscle_loc = self.muscle_loc.GetPath()
             ccp4mg_loc = self.ccp4mg_loc.GetPath()
             project_dir = output_loc + spacer + project_name
             define_pdb = self.define_pdb.GetCurrentSelection()
