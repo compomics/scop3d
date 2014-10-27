@@ -2,10 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ee9ae540-3ed5-43cc-bc52-0010c64766bc" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bio_blast_pdb_fasta.py" afterPath="$PROJECT_DIR$/bio_blast_pdb_fasta.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bio_output.py" afterPath="$PROJECT_DIR$/bio_output.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bio_parse_pdb_fasta.py" afterPath="$PROJECT_DIR$/bio_parse_pdb_fasta.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bio_pictures_pdb_fasta.py" afterPath="$PROJECT_DIR$/bio_pictures_pdb_fasta.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bio_retrieve_fasta.py" afterPath="$PROJECT_DIR$/bio_retrieve_fasta.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -62,21 +58,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bio_retrieve_fasta.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="bio_retrieve_fasta.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bio_retrieve_fasta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="40" column="0" selection-start="808" selection-end="808" vertical-scroll-proportion="0.0" vertical-offset="1905" max-vertical-offset="4755">
-              <folding>
-                <element signature="e#143#152#0" expanded="true" />
-              </folding>
+            <state line="131" column="157" selection-start="4834" selection-end="4834" vertical-scroll-proportion="-7.4119105" vertical-offset="4892" max-vertical-offset="5295">
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bio_parse_pdb_fasta.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="bio_parse_pdb_fasta.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bio_parse_pdb_fasta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="303" column="26" selection-start="11405" selection-end="11405" vertical-scroll-proportion="9.713959" vertical-offset="0" max-vertical-offset="4545">
+            <state line="36" column="0" selection-start="1265" selection-end="1265" vertical-scroll-proportion="0.0" vertical-offset="540" max-vertical-offset="4545">
               <folding />
             </state>
           </provider>
@@ -110,6 +104,11 @@
   <component name="Git.Settings">
     <option name="UPDATE_TYPE" value="MERGE" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="master" />
+      </map>
+    </option>
   </component>
   <component name="GitLogSettings">
     <option name="myStructureFilterPaths" />
@@ -554,7 +553,11 @@
       <created>1411566674672</created>
       <updated>1411566674672</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="mac version and error handling for blast">
+      <created>1414420132458</created>
+      <updated>1414420132459</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -582,7 +585,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.12816189" sideWeight="0.49959967" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2797762" sideWeight="0.80738366" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.28457233" sideWeight="0.80738366" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32850242" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19261637" sideWeight="0.25419664" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32933652" sideWeight="0.6714976" order="3" side_tool="false" content_ui="tabs" />
@@ -648,7 +651,8 @@
     <MESSAGE value="test" />
     <MESSAGE value="pictures being made" />
     <MESSAGE value="adjusted entropy to relative entropy&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="adjusted entropy to relative entropy&#10;" />
+    <MESSAGE value="mac version and error handling for blast" />
+    <option name="LAST_COMMIT_MESSAGE" value="mac version and error handling for blast" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -656,6 +660,48 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/bio_conservation_mapping_fasta.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="37" selection-start="1337" selection-end="1337" vertical-scroll-proportion="0.0" vertical-offset="585" max-vertical-offset="2925">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bio_pictures_pdb_fasta.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="427" column="0" selection-start="16620" selection-end="16620" vertical-scroll-proportion="0.0" vertical-offset="6405" max-vertical-offset="6735">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bio_retrieve_fasta.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="0" selection-start="824" selection-end="824" vertical-scroll-proportion="0.0" vertical-offset="600" max-vertical-offset="5385">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bio_parse_pdb_fasta.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="0" selection-start="1265" selection-end="1265" vertical-scroll-proportion="0.0" vertical-offset="540" max-vertical-offset="4545">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bio_output.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="21" selection-start="448" selection-end="448" vertical-scroll-proportion="0.0" vertical-offset="705" max-vertical-offset="3675">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bio_blast_pdb_fasta.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="57" column="28" selection-start="1633" selection-end="1633" vertical-scroll-proportion="0.0" vertical-offset="855" max-vertical-offset="3555">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/bio_parse_pdb_fasta.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0" />
@@ -697,6 +743,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/bio_parse_pdb_fasta.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="0" selection-start="1265" selection-end="1265" vertical-scroll-proportion="0.0" vertical-offset="540" max-vertical-offset="4545">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/bio_blast_pdb_fasta.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="57" column="28" selection-start="1633" selection-end="1633" vertical-scroll-proportion="0.0" vertical-offset="855" max-vertical-offset="3555">
@@ -706,16 +759,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bio_retrieve_fasta.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="0" selection-start="808" selection-end="808" vertical-scroll-proportion="0.0" vertical-offset="465" max-vertical-offset="4755">
-          <folding>
-            <element signature="e#143#152#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bio_parse_pdb_fasta.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="303" column="26" selection-start="11405" selection-end="11405" vertical-scroll-proportion="9.713959" vertical-offset="0" max-vertical-offset="4545">
+        <state line="131" column="157" selection-start="4834" selection-end="4834" vertical-scroll-proportion="-7.4119105" vertical-offset="4892" max-vertical-offset="5295">
           <folding />
         </state>
       </provider>

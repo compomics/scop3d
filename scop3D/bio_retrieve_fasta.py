@@ -8,13 +8,15 @@ import wx
 import wx.xrc
 from sys import platform as _platform
 
-
+pdbfile = ""
+pdbfile_or = ""
+output_loc = ""
+fastafile = ""
 spacer = ""
 fasta_dir = ""
 project_dir = ""
 project_name = ""
 define_pdb = 0
-pdbfile = ""
 cons_tresh = ""
 win_platform = ""
 muscle_loc = ""
@@ -37,6 +39,28 @@ def operating_sys():
     elif _platform == "win32":
         spacer = "\\"
         win_platform = "win"
+
+def preload():
+    global fastafile
+    global output_loc
+    global pdbfile
+    global ccp4mg_loc
+    global muscle_loc
+    global config
+    directory = os.path.dirname(os.path.abspath(__file__))
+    config = directory + spacer + "configure.txt"
+    if (os.path.exists(config) == True):
+        with open(config) as f:
+            list_var= f.readlines()
+            list_variables = []
+            for item in list_var:
+                list_variables.append(item.rstrip('\n'))
+            fastafile = list_variables[0]
+            output_loc = list_variables[1]
+            pdbfile = list_variables[2]
+            ccp4mg_loc = list_variables[3]
+            muscle_loc = list_variables[4]
+        f.close()
 
 
 
@@ -65,7 +89,7 @@ class Scop3D ( wx.Frame ):
 		self.lbl_fasta_file.Wrap( -1 )
 		gSizer12.Add( self.lbl_fasta_file, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-		self.fastafile = wx.FilePickerCtrl( self.project, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		self.fastafile = wx.FilePickerCtrl( self.project, wx.ID_ANY, fastafile, u"Select a file", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gSizer12.Add( self.fastafile, 0, wx.ALL, 5 )
 
 		# location for project directory
@@ -73,7 +97,7 @@ class Scop3D ( wx.Frame ):
 		self.lbl_output_loc.Wrap( -1 )
 		gSizer12.Add( self.lbl_output_loc, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-		self.output_loc = wx.DirPickerCtrl( self.project, wx.ID_ANY, wx.EmptyString, u"Select a folder", wx.DefaultPosition, wx.DefaultSize, wx.DIRP_DEFAULT_STYLE )
+		self.output_loc = wx.DirPickerCtrl( self.project, wx.ID_ANY, output_loc, u"Select a folder", wx.DefaultPosition, wx.DefaultSize, wx.DIRP_DEFAULT_STYLE )
 		gSizer12.Add( self.output_loc, 0, wx.ALL, 5 )
 
 
@@ -105,7 +129,7 @@ class Scop3D ( wx.Frame ):
 		self.lbl_pdb_loc.Wrap( -1 )
 		gSizer2.Add( self.lbl_pdb_loc, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-		self.pdb_loc = wx.FilePickerCtrl( self.pdb, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		self.pdb_loc = wx.FilePickerCtrl( self.pdb, wx.ID_ANY, pdbfile, u"Select a file", u"*.pdb*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE)
 		gSizer2.Add( self.pdb_loc, 0, wx.ALL, 5 )
 
 
@@ -144,7 +168,7 @@ class Scop3D ( wx.Frame ):
 		self.lbl_muscle_loc.Wrap( -1 )
 		gSizer5.Add( self.lbl_muscle_loc, 0, wx.ALL, 5 )
 
-		self.muscle_loc = wx.FilePickerCtrl( self.settings, wx.ID_ANY, wx.EmptyString, u"Select muscle.exe", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		self.muscle_loc = wx.FilePickerCtrl( self.settings, wx.ID_ANY, muscle_loc, u"Select muscle.exe", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gSizer5.Add( self.muscle_loc, 0, wx.ALL, 5 )
 
 
@@ -154,10 +178,10 @@ class Scop3D ( wx.Frame ):
 
 
 		if _platform == "darwin":
-		    self.ccp4mg_loc = wx.FilePickerCtrl( self.settings, wx.ID_ANY, wx.EmptyString, u"Select ccp4mg file", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		    self.ccp4mg_loc = wx.FilePickerCtrl( self.settings, wx.ID_ANY, ccp4mg_loc, u"Select ccp4mg file", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		    gSizer5.Add( self.ccp4mg_loc, 0, wx.ALL, 5 )
 		if _platform != "darwin":
-		    self.ccp4mg_loc = wx.DirPickerCtrl( self.settings, wx.ID_ANY, wx.EmptyString, u"Select ccp4mg directory", wx.DefaultPosition, wx.DefaultSize, wx.DIRP_DEFAULT_STYLE )
+		    self.ccp4mg_loc = wx.DirPickerCtrl( self.settings, wx.ID_ANY, ccp4mg_loc, u"Select ccp4mg directory", wx.DefaultPosition, wx.DefaultSize, wx.DIRP_DEFAULT_STYLE )
 		    gSizer5.Add( self.ccp4mg_loc, 0, wx.ALL, 5 )
 
 
@@ -243,18 +267,22 @@ class Scop3D ( wx.Frame ):
 	def done( self, event ):
             #store the information gathered with GUI
             global project_name
+            global fastafile
             global project_dir
             global fasta_dir
             global fasta_name
             global define_pdb
             global pdbfile
+            global pdbfile_or
             global cons_tresh
             global muscle_loc
             global ccp4mg_loc
+            global output_loc
             global output1
             global output2
             global output3
             global output4
+
 
             project_name = self.project_name.GetValue()
             output_loc = self.output_loc.GetPath()
@@ -264,6 +292,7 @@ class Scop3D ( wx.Frame ):
             project_dir = output_loc + spacer + project_name
             define_pdb = self.define_pdb.GetCurrentSelection()
             pdbfile = self.pdb_loc.GetPath()
+            pdbfile_or = pdbfile
             cons_tresh = float(self.cons_tresh.GetValue())
             # output1 = self.output1.Get3StateValue()
             output2 = self.output2.Get3StateValue()
@@ -290,6 +319,16 @@ class Scop3D ( wx.Frame ):
             self.Close()
 
 
+def afterload():
+    f = open(config, "w")
+    f.write(fastafile + "\n")
+    f.write(output_loc + "\n")
+    f.write(pdbfile_or + "\n")
+    f.write(ccp4mg_loc + "\n")
+    f.write(muscle_loc + "\n")
+    f.close()
+
+
 def write_info():
     # write an info file with general project information.
     info_file= open(project_dir + spacer +"info.txt", "a")
@@ -302,10 +341,11 @@ def write_info():
 
 def main():
     operating_sys()
+    preload()
     app = wx.App(0)
     MainApp = Scop3D(None)
     MainApp.Show()
     app.MainLoop()
-
+    afterload()
 
 main()
