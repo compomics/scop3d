@@ -18,6 +18,7 @@ from bio_retrieve_fasta import output3
 from bio_retrieve_fasta import output4
 from weblogolib import *
 from bio_retrieve_fasta import muscle_loc
+from sys import platform as _platform
 
 
 bigest_amount_complete = []
@@ -272,9 +273,13 @@ def sequence_logo():
     options = LogoOptions()
     options.title = "sequence logo"
     format = LogoFormat(data, options)
-    eps=eps_formatter( data, format)
     fout = open(project_dir + spacer + "sequence_logo.eps", 'w')
-    fout.write(eps)
+    if _platform == "darwin":
+        eps_formatter(data, format, fout)
+    else:
+        eps = eps_formatter(data, format)
+        fout.write(eps)
+
 
 def convert():
     # convert eps to png (only possible in linux, windows will be added).

@@ -6,6 +6,7 @@ from bio_retrieve_fasta import ccp4mg_loc
 from bio_retrieve_fasta import output3
 from bio_retrieve_fasta import output4
 from bio_retrieve_fasta import win_platform
+from sys import platform as _platform
 
 name = ""
 
@@ -15,6 +16,7 @@ code2 = ""
 code3 = ""
 code4 = ""
 code5 = ""
+cmd_darwin = ""
 
 def directories(name):
     if name == "myOutfile_abundance.pdb":
@@ -29,6 +31,7 @@ def write_code(name):
     global code3
     global code4
     global code5
+    global cmd_darwin
     code0 = """MolData (
      filename = ['FULLPATH',
  '""" + name + """',
@@ -386,7 +389,7 @@ view = View (
         picture1.close()
 
 def execute_code(code, name):
-    if win_platform == False:
+    if _platform == "linux" or _platform == "linux2":
         if name == "myOutfile_abundance.pdb":
             cmd = ccp4mg_loc + spacer + "bin" + spacer + "ccp4mg"+ " -norestore -picture " + project_dir + spacer + "Pictures" + spacer + "tmp" + spacer + code + ".mgpic.py" + " -R " + project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + code + ".png" + " -quit"
             os.system(cmd)
@@ -404,6 +407,17 @@ def execute_code(code, name):
             code_in = project_dir + spacer + "Pictures" + spacer + "tmp" + spacer + code + ".mgpic.py"
             pic_out = project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + code + ".png"
             os.system("\"" + ccmp4g_loc + "\"" + " -norestore -picture " + code_in + " -R " + pic_out + " -quit")
+    elif _platform == "darwin":
+        if name == "myOutfile_abundance.pdb":
+            ccmp4g_loc = ccp4mg_loc + "/Contents/ccp4mg/bin/ccp4mg"
+            code_in = project_dir + spacer + "Pictures" + spacer + "tmp" + spacer + code + ".mgpic.py"
+            pic_out = project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + code + ".png"
+            cmd_darwin = ccmp4g_loc + " -norestore -picture " + code_in + " -R " + pic_out + " -quit"
+        if name == "myOutfile_amount.pdb":
+            ccmp4g_loc = ccp4mg_loc + "/Contents/ccp4mg/bin/ccp4mg"
+            code_in = project_dir + spacer + "Pictures" + spacer + "tmp" + spacer + code + ".mgpic.py"
+            pic_out = project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + code + ".png"
+            cmd_darwin = ccmp4g_loc + " -norestore -picture " + code_in + " -R " + pic_out + " -quit"
 
 def main():
     names = []

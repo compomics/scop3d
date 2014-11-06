@@ -4,6 +4,8 @@
 import wx
 import wx.xrc
 import wx.richtext
+import sys
+import os
 from bio_conservation_mapping_fasta import consensus
 from Bio.Blast import NCBIWWW
 from Bio.Blast import NCBIXML
@@ -54,13 +56,72 @@ class MyFrame1 ( wx.Frame ):
 
 	# open the my_blas.xml file
 	def done( self, event ):
-            result_handle = NCBIWWW.qblast('blastp', 'pdb', consensus)
-            print "bla"
-            save_file = open(project_dir + spacer + "my_blast.xml", "w")
-            save_file.write(result_handle.read())
-            save_file.close()
-            result_handle.close()
-            self.Close()
+            try:
+                result_handle = NCBIWWW.qblast('blastp', 'pdb', consensus)
+                print "bla"
+                save_file = open(project_dir + spacer + "my_blast.xml", "w")
+                save_file.write(result_handle.read())
+                save_file.close()
+                result_handle.close()
+                self.Close()
+            except:
+                app = wx.App(0)
+                MainApp =MyFrame3(None)
+                MainApp.Show()
+                app.MainLoop()
+
+class MyFrame3 ( wx.Frame ):
+
+
+	def __init__( self, parent ):
+		errormess = """
+	Blast error:
+	Blast could not be finished.
+	Probably your treshold has been set to high
+	for the number of sequences or the variation between them.
+	If the programme does'nt work with altered treshold. Check the manual:
+	https://code.google.com/p/scop3d/source/browse/?repo=wiki
+	or contact us.
+	"""
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Scop3D - ERROR", pos = wx.DefaultPosition, size = wx.Size( 567,328 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+
+		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+
+		bSizer1 = wx.BoxSizer( wx.VERTICAL )
+
+		gSizer3 = wx.GridSizer( 1, 1, 0, 0 )
+
+		self.error = wx.richtext.RichTextCtrl( self, wx.ID_ANY, errormess, wx.DefaultPosition, wx.DefaultSize, wx.TE_READONLY|wx.VSCROLL|wx.HSCROLL|wx.NO_BORDER|wx.WANTS_CHARS )
+		gSizer3.Add( self.error, 1, wx.EXPAND |wx.ALL, 5 )
+
+
+		bSizer1.Add( gSizer3, 1, wx.EXPAND, 5 )
+
+		self.lbl_restart = wx.ToggleButton( self, wx.ID_ANY, u"restart", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer1.Add( self.lbl_restart, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL|wx.EXPAND, 5 )
+
+		self.lbl_close = wx.ToggleButton( self, wx.ID_ANY, u"close", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer1.Add( self.lbl_close, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.EXPAND|wx.BOTTOM|wx.RIGHT|wx.LEFT, 5 )
+
+
+		self.SetSizer( bSizer1 )
+		self.Layout()
+
+		self.Centre( wx.BOTH )
+		self.lbl_close.Bind( wx.EVT_TOGGLEBUTTON, self.close )
+
+		self.lbl_restart.Bind( wx.EVT_TOGGLEBUTTON, self.restart )
+
+
+	def __del__( self ):
+		pass
+
+	def close(self, event):
+	    sys.exit()
+	def restart(self, event):
+	    shutil.rmtree(project_dir)
+	    python = sys.executable
+	    os.execl(python, python, * sys.argv)
 
 
 def blast():
