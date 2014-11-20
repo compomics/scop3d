@@ -55,6 +55,7 @@ ColourSchemeManager(
           interpolate_mode = 'HSV'          ),
 
 view = View (
+     orientation = [1,0,0,0],
      centre_MolData = '""" + name[0:-4] + """',
      centre_selection = 'all',
      zoom = 0.15,
