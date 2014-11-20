@@ -34,7 +34,7 @@ def write_code(name):
     global cmd_darwin
     code0 = """MolData (
      filename = ['FULLPATH',
- '""" + name + """',
+ '""" + name+  """',
  '""" + project_dir + spacer + name + """'],
      name = 'filename',
      model_symmetry =  {
@@ -52,7 +52,13 @@ ColourSchemeManager(
           ranges = [0.0, 0.0, 1.0, 0.0],
           colours = ['blue', 'blue', 'red', 'red'],
           colour_wheel_direction = 'clockwise',
-          interpolate_mode = 'HSV'          ),"""
+          interpolate_mode = 'HSV'          ),
+
+view = View (
+     centre_MolData = '""" + name[0:-4] + """',
+     centre_selection = 'all',
+     zoom = 0.15,
+     )"""
 
     code1= """import math
 import numpy as np
@@ -116,7 +122,10 @@ else:
 # print quat
 
 view = View (
-     orientation = quat
+     orientation = quat,
+     centre_MolData = '""" + name[0:-4] + """',
+     centre_selection = 'all',
+     zoom = 0.15,
      )"""
 
     code2 = """import math
@@ -181,7 +190,10 @@ else:
 # print quat
 
 view = View (
-     orientation = quat
+     orientation = quat,
+     centre_MolData = '""" + name[0:-4] + """',
+     centre_selection = 'all',
+     zoom = 0.15,
      )
 """
     code3 = """import math
@@ -246,7 +258,10 @@ else:
 # print quat
 
 view = View (
-     orientation = quat
+     orientation = quat,
+     centre_MolData = '""" + name[0:-4] + """',
+     centre_selection = 'all',
+     zoom = 0.15,
      )
 """
     code4 = """import math
@@ -311,7 +326,10 @@ else:
 # print quat
 
 view = View (
-     orientation = quat
+     orientation = quat,
+     centre_MolData = '""" + name[0:-4] + """',
+     centre_selection = 'all',
+     zoom = 0.15,
      )
 """
     code5 = """import math
@@ -376,7 +394,10 @@ else:
 # print quat
 
 view = View (
-     orientation = quat
+     orientation = quat,
+     centre_MolData = '""" + name[0:-4] + """',
+     centre_selection = 'all',
+     zoom = 0.15,
      )
 """
     codes = [code0, code1, code2, code3, code4, code5]
