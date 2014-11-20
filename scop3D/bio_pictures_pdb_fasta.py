@@ -382,7 +382,10 @@ view = View (
     codes = [code0, code1, code2, code3, code4, code5]
     x = 0
     for code in codes:
-        picture1 = open(project_dir + spacer + "Pictures" + spacer + "tmp" + spacer + "code" + str(x) + ".mgpic.py", "w")
+        if name == "myOutfile_abundance.pdb":
+            picture1 = open(project_dir + spacer + "Pictures" + spacer + "tmp-abundance" + spacer + "code" + str(x) + ".mgpic.py", "w")
+        else:
+            picture1 = open(project_dir + spacer + "Pictures" + spacer + "tmp-entropy" + spacer + "code" + str(x) + ".mgpic.py", "w")
         x = int(x)
         x += 1
         picture1.write(code)
@@ -391,31 +394,31 @@ view = View (
 def execute_code(code, name):
     if _platform == "linux" or _platform == "linux2":
         if name == "myOutfile_abundance.pdb":
-            cmd = ccp4mg_loc + spacer + "bin" + spacer + "ccp4mg"+ " -norestore -picture " + project_dir + spacer + "Pictures" + spacer + "tmp" + spacer + code + ".mgpic.py" + " -R " + project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + code + ".png" + " -quit"
+            cmd = ccp4mg_loc + spacer + "bin" + spacer + "ccp4mg"+ " -norestore -picture " + project_dir + spacer + "Pictures" + spacer + "tmp-abundance" + spacer + code + ".mgpic.py" + " -R " + project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + code + ".png" + " -quit"
             os.system(cmd)
         if name == "myOutfile_amount.pdb":
-            cmd = ccp4mg_loc + spacer + "bin" + spacer + "ccp4mg"+ " -norestore -picture " + project_dir + spacer + "Pictures" + spacer + "tmp" + spacer + code + ".mgpic.py" + " -R " + project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + code + ".png" + " -quit"
+            cmd = ccp4mg_loc + spacer + "bin" + spacer + "ccp4mg"+ " -norestore -picture " + project_dir + spacer + "Pictures" + spacer + "tmp-entropy" + spacer + code + ".mgpic.py" + " -R " + project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + code + ".png" + " -quit"
             os.system(cmd)
     elif win_platform:
         if name == "myOutfile_abundance.pdb":
             ccmp4g_loc = ccp4mg_loc + spacer + "winccp4mg.exe"
-            code_in = project_dir + spacer + "Pictures" + spacer + "tmp" + spacer + code + ".mgpic.py"
+            code_in = project_dir + spacer + "Pictures" + spacer + "tmp-abundance" + spacer + code + ".mgpic.py"
             pic_out = project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + code + ".png"
             os.system("\"" + ccmp4g_loc + "\"" + " -norestore -picture " + code_in + " -R " + pic_out + " -quit")
         if name == "myOutfile_amount.pdb":
             ccmp4g_loc = ccp4mg_loc + spacer + "winccp4mg.exe"
-            code_in = project_dir + spacer + "Pictures" + spacer + "tmp" + spacer + code + ".mgpic.py"
+            code_in = project_dir + spacer + "Pictures" + spacer + "tmp-entropy" + spacer + code + ".mgpic.py"
             pic_out = project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + code + ".png"
             os.system("\"" + ccmp4g_loc + "\"" + " -norestore -picture " + code_in + " -R " + pic_out + " -quit")
     elif _platform == "darwin":
         if name == "myOutfile_abundance.pdb":
             ccmp4g_loc = ccp4mg_loc + "/Contents/ccp4mg/bin/ccp4mg"
-            code_in = project_dir + spacer + "Pictures" + spacer + "tmp" + spacer + code + ".mgpic.py"
+            code_in = project_dir + spacer + "Pictures" + spacer + "tmp-abundance" + spacer + code + ".mgpic.py"
             pic_out = project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + code + ".png"
             cmd_darwin = ccmp4g_loc + " -norestore -picture " + code_in + " -R " + pic_out + " -quit"
         if name == "myOutfile_amount.pdb":
             ccmp4g_loc = ccp4mg_loc + "/Contents/ccp4mg/bin/ccp4mg"
-            code_in = project_dir + spacer + "Pictures" + spacer + "tmp" + spacer + code + ".mgpic.py"
+            code_in = project_dir + spacer + "Pictures" + spacer + "tmp-entropy" + spacer + code + ".mgpic.py"
             pic_out = project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + code + ".png"
             cmd_darwin = ccmp4g_loc + " -norestore -picture " + code_in + " -R " + pic_out + " -quit"
 
@@ -423,9 +426,10 @@ def main():
     names = []
     global name
     os.makedirs(project_dir + spacer + "Pictures")
-    os.makedirs(project_dir + spacer + "Pictures" + spacer + "tmp")
-    shutil.copy(project_dir + spacer + "myOutfile_abundance.pdb", project_dir + spacer + "Pictures" + spacer + "tmp")
-    shutil.copy(project_dir + spacer + "myOutfile_amount.pdb", project_dir + spacer + "Pictures" + spacer + "tmp")
+    os.makedirs(project_dir + spacer + "Pictures" + spacer + "tmp-abundance")
+    os.makedirs(project_dir + spacer + "Pictures" + spacer + "tmp-entropy")
+    shutil.copy(project_dir + spacer + "myOutfile_abundance.pdb", project_dir + spacer + "Pictures" + spacer + "tmp-abundance")
+    shutil.copy(project_dir + spacer + "myOutfile_amount.pdb", project_dir + spacer + "Pictures" + spacer + "tmp-entropy")
     if output3 == 1 and output4 == 1:
         names = ["myOutfile_abundance.pdb", "myOutfile_amount.pdb"]
     elif output3 == 1:

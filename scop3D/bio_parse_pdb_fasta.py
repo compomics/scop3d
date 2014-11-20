@@ -28,52 +28,51 @@ print project_name
 list_unique_chains = []
 conversion_fail = ""
 
-class MyFrame1 ( wx.Frame ):
 
-	def __init__( self, parent ):
+class MyFrame1(wx.Frame):
+    def __init__(self, parent):
         # choose the chains that must be adjusted, all the other chains are filled with arbitrary values,
         # for better coloring.
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Scop3D - chains", pos = wx.DefaultPosition, size = wx.Size( 307,250 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+        wx.Frame.__init__(self, parent, id=wx.ID_ANY, title=u"Scop3D - chains", pos=wx.DefaultPosition,
+                          size=wx.Size(307, 250), style=wx.DEFAULT_FRAME_STYLE | wx.TAB_TRAVERSAL)
 
-		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+        self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
 
-		lbl_chain = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"choose the chains to change:" ), wx.VERTICAL )
+        lbl_chain = wx.StaticBoxSizer(wx.StaticBox(self, wx.ID_ANY, u"choose the chains to change:"), wx.VERTICAL)
 
-		self.m_panel1 = wx.Panel( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		gSizer1 = wx.GridSizer( 2, 1, 0, 0 )
+        self.m_panel1 = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
+        gSizer1 = wx.GridSizer(2, 1, 0, 0)
 
-		chainsChoices = list_unique_chains
-		self.chains = wx.CheckListBox( self.m_panel1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, chainsChoices, 0 )
-		gSizer1.Add( self.chains, 0, wx.ALL, 5 )
+        chainsChoices = list_unique_chains
+        self.chains = wx.CheckListBox(self.m_panel1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, chainsChoices, 0)
+        gSizer1.Add(self.chains, 0, wx.ALL, 5)
 
-		self.button_select = wx.Button( self.m_panel1, wx.ID_ANY, u"Select", wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer1.Add( self.button_select, 0, wx.ALL|wx.ALIGN_RIGHT|wx.ALIGN_BOTTOM, 5 )
+        self.button_select = wx.Button(self.m_panel1, wx.ID_ANY, u"Select", wx.DefaultPosition, wx.DefaultSize, 0)
+        gSizer1.Add(self.button_select, 0, wx.ALL | wx.ALIGN_RIGHT | wx.ALIGN_BOTTOM, 5)
 
+        self.m_panel1.SetSizer(gSizer1)
+        self.m_panel1.Layout()
+        gSizer1.Fit(self.m_panel1)
+        lbl_chain.Add(self.m_panel1, 1, wx.EXPAND | wx.ALL, 5)
 
-		self.m_panel1.SetSizer( gSizer1 )
-		self.m_panel1.Layout()
-		gSizer1.Fit( self.m_panel1 )
-		lbl_chain.Add( self.m_panel1, 1, wx.EXPAND |wx.ALL, 5 )
+        self.SetSizer(lbl_chain)
+        self.Layout()
 
+        self.Centre(wx.BOTH)
 
-		self.SetSizer( lbl_chain )
-		self.Layout()
+        # Connect Events
+        self.button_select.Bind(wx.EVT_BUTTON, self.done)
 
-		self.Centre( wx.BOTH )
-
-		# Connect Events
-		self.button_select.Bind( wx.EVT_BUTTON, self.done )
-
-	def __del__( self ):
-		pass
+    def __del__(self):
+        pass
 
 
-	# Virtual event handlers, overide them in your derived class
-	def done( self, event ):
-		global chains
-		chains = self.chains.GetCheckedStrings()
-		print chains
-		self.Close()
+    # Virtual event handlers, overide them in your derived class
+    def done(self, event):
+        global chains
+        chains = self.chains.GetCheckedStrings()
+        print chains
+        self.Close()
 
 
 def bigest():
@@ -87,12 +86,12 @@ def bigest():
                 item = item
                 smallest = item
         smallest = float(smallest)
-        smallest = "%.2f"%smallest
+        smallest = "%.2f" % smallest
         bigest_amount_complete.append([smallest])
     print (bigest_amount_complete)
     print len(bigest_amount_complete)
     print len(entropy_position_list)
-    for x in range (0, len(entropy_position_list), 1):
+    for x in range(0, len(entropy_position_list), 1):
         bigest_amount_complete[x].append(entropy_position_list[x])
     return bigest_amount_complete
 
@@ -119,9 +118,9 @@ def get_reference():
 def get_alignment(chain):
     # pairwise alignment between pdb-chain of a certain chain and the consensus sequence (determining which position should be changed).
     # first getting the chain-sequence from pdb
-    parser=PDBParser()
-    structure=parser.get_structure("bla", pdbfile)
-    ppb=CaPPBuilder()
+    parser = PDBParser()
+    structure = parser.get_structure("bla", pdbfile)
+    ppb = CaPPBuilder()
     model = structure[0]
     chaint = model[chain]
     seq = ""
@@ -136,17 +135,22 @@ def get_alignment(chain):
     pairwise_aln.close()
     # muscle alignment
     if muscle_loc:
-        muscle_cline = MuscleCommandline(muscle_loc, input=project_dir + spacer + "fasta_cons_" + str(chain) + ".fasta", out=project_dir + spacer + "pairwise_aln_cons_" + str(chain) + ".clw", clwstrict=True)
+        muscle_cline = MuscleCommandline(muscle_loc, input=project_dir + spacer + "fasta_cons_" + str(chain) + ".fasta",
+                                         out=project_dir + spacer + "pairwise_aln_cons_" + str(chain) + ".clw",
+                                         clwstrict=True)
         muscle_cline()
     else:
-        muscle_cline = MuscleCommandline(input=project_dir + spacer + "fasta_cons_" + str(chain) + ".fasta", out=project_dir + spacer + "pairwise_aln_cons_" + str(chain) + ".clw", clwstrict=True)
+        muscle_cline = MuscleCommandline(input=project_dir + spacer + "fasta_cons_" + str(chain) + ".fasta",
+                                         out=project_dir + spacer + "pairwise_aln_cons_" + str(chain) + ".clw",
+                                         clwstrict=True)
         muscle_cline()
     seq_alignment = []
     handle = open(project_dir + spacer + "pairwise_aln_cons_" + str(chain) + ".clw", "rU")
-    for record in SeqIO.parse(handle, "clustal") :
+    for record in SeqIO.parse(handle, "clustal"):
         seq = str(record.seq)
         seq_alignment.append(seq)
     handle.close()
+    print consensus
     print seq_alignment
     return seq_alignment
 
@@ -177,27 +181,31 @@ def get_positions(chain):
     bigest_alignment = []
     y = 0
     z = 0
+
     for i in range(0, len(consensus), 1):
-        if consensus[i] == alignment[0][y]:
-            bigest_alignment.append(bigest_amount_complete[z])
-            y += 1
-            z += 1
-        else:
-            if consensus[i] == "-":
+        if y < len(alignment[0]):
+            if consensus[i] == alignment[0][y]:
+                bigest_alignment.append(bigest_amount_complete[z])
+                y += 1
                 z += 1
             else:
-                while consensus[i] != alignment[0][y]:
-                    bigest_alignment.append([0.5, 1.0, "T"])
-                    y += 1
-                else:
-                    bigest_alignment.append(bigest_amount_complete[z])
-                    y += 1
+                if consensus[i] == "-":
                     z += 1
+                else:
+                    while consensus[i] != alignment[0][y]:
+                        bigest_alignment.append([0.5, 1.0, "T"])
+                        y += 1
+                    else:
+                        bigest_alignment.append(bigest_amount_complete[z])
+                        y += 1
+                        z += 1
+        else:
+            z += 1
     # if gaps added at the end of pdb sequence add arbitrary values.
     if len(alignment[0]) != len(bigest_alignment):
-        end_gaps = len(alignment[0])-len(bigest_alignment)
+        end_gaps = len(alignment[0]) - len(bigest_alignment)
         print end_gaps
-        for i in range (0,end_gaps,1):
+        for i in range(0, end_gaps, 1):
             bigest_alignment.append([0.5, 1.0, "T"])
     print bigest_alignment
     position_align = []
@@ -231,13 +239,15 @@ def make_outputpdb(name, outputtype):
                     if list_unique_positions[x] == position:
                         myBfactor = myPDBline[60:66].strip()
                         print(myBfactor)
-                        print(myPDBline[:60]+"  "+str(bigest_amount_complete[n][outputtype])+myPDBline[66:])
-                        myOutfile.write(myPDBline[:60]+"  "+str(bigest_amount_complete[n][outputtype])+myPDBline[66:])
+                        print(myPDBline[:60] + "  " + str(bigest_amount_complete[n][outputtype]) + myPDBline[66:])
+                        myOutfile.write(
+                            myPDBline[:60] + "  " + str(bigest_amount_complete[n][outputtype]) + myPDBline[66:])
                     # go to next position
                     else:
                         n += 1
-                        print(myPDBline[:60]+"  "+str(bigest_amount_complete[n][outputtype])+myPDBline[66:])
-                        myOutfile.write(myPDBline[:60]+"  "+str(bigest_amount_complete[n][outputtype])+myPDBline[66:])
+                        print(myPDBline[:60] + "  " + str(bigest_amount_complete[n][outputtype]) + myPDBline[66:])
+                        myOutfile.write(
+                            myPDBline[:60] + "  " + str(bigest_amount_complete[n][outputtype]) + myPDBline[66:])
                         x += 1
                 else:
                     myOutfile.write(myPDBline)
@@ -253,17 +263,18 @@ def make_outputpdb(name, outputtype):
 def pdb_cleanup(name, output):
     # change all other chains b-values to arbitrary values
     pdb = open(str(pdbfile + name), "r")
-    myOutfile = open(str(project_dir + spacer + "myOutfile_"+ name + ".pdb"), "w")
+    myOutfile = open(str(project_dir + spacer + "myOutfile_" + name + ".pdb"), "w")
     for myPDBline in pdb:
         if myPDBline.startswith("ATOM") and myPDBline[21] not in chains:
             if output == "output3":
-                myOutfile.write(myPDBline[:60]+ '  50.00' + myPDBline[66:])
+                myOutfile.write(myPDBline[:60] + '  50.00' + myPDBline[66:])
             if output == "output4":
-                myOutfile.write(myPDBline[:60]+ '  100.0' + myPDBline[66:])
+                myOutfile.write(myPDBline[:60] + '  100.0' + myPDBline[66:])
         else:
             myOutfile.write(myPDBline)
     myOutfile.close()
     pdb.close()
+
 
 def sequence_logo():
     # create sequence logo with weblogo
@@ -311,8 +322,8 @@ def parse_pdb():
             global conversion_fail
             conversion_fail = "fail"
 
-        # im = Image.open(project_dir + spacer + "sequence_logo.eps")
-        # im.save(project_dir + spacer + "sequence_logo.png", quality=100, optimize=True)
+            # im = Image.open(project_dir + spacer + "sequence_logo.eps")
+            # im.save(project_dir + spacer + "sequence_logo.png", quality=100, optimize=True)
 
 
 parse_pdb()

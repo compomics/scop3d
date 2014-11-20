@@ -10,6 +10,7 @@ from bio_retrieve_fasta import output3
 from bio_retrieve_fasta import output4
 from bio_blast_pdb_fasta import project_dir
 from bio_retrieve_fasta import project_name
+from bio_retrieve_fasta import ccp4mg_loc
 from bio_parse_pdb_fasta import consensus
 from bio_pictures_pdb_fasta import spacer
 from sys import platform as _platform
@@ -18,7 +19,21 @@ from sys import platform as _platform
 
 consensus = consensus
 file_info = open(project_dir + spacer + "info.txt", "r")
+errorpictures = """
+	Picture error:
+	There are no pictures to be shown.
+	2 things can have happend.
+	If you're running Scop3D on a mac,
+	we have not been able to make ccp4mg work from command line on this operating system.
 
+	If not make sure ccp4mg is correctly installed.
+	Try running it separately from Scop3D.
+	If you cannot make it work we strongly recommend you try a visualization program like pymol.
+	and visualize myOutfile_abundance.pdb and myOutfile_amount.pdb outside Scop3D.
+
+	Please let us know all problems so we can improve Scop3D.
+	We are sorry for the inconvenience.
+	"""
 # get all b-values of procentual abundance
 if output3 == 1:
     file_abundance=open(project_dir + spacer + "myOutfile_abundance.pdb", "r")
@@ -148,9 +163,10 @@ class Scop3D ( wx.Frame ):
 
 
 
-		if _platform != "darwin":
-		    self.pictures_abundance = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		    gSizer7 = wx.GridSizer( 3, 2, 0, 0 )
+		if _platform != "darwin" and os.path.exists(project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + "code1.png"):
+		    self.pictures_abundance = wx.ScrolledWindow( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		    self.pictures_abundance.SetScrollRate( 5, 5 )
+		    gSizer7 = wx.GridSizer( 4, 2, 0, 0 )
 		    self.code0_abu = wx.Image(project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + "code0.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		    self.m_code0_abu = wx.StaticBitmap(self.pictures_abundance, -1, self.code0_abu, (10, 5), (self.code0_abu.GetWidth(), self.code0_abu.GetHeight()))
 		    gSizer7.Add( self.m_code0_abu, 0, wx.ALL, 5 )
@@ -175,13 +191,21 @@ class Scop3D ( wx.Frame ):
 		    self.m_code5_abu = wx.StaticBitmap(self.pictures_abundance, -1, self.code5_abu, (10, 5), (self.code5_abu.GetWidth(), self.code5_abu.GetHeight()))
 		    gSizer7.Add( self.m_code5_abu, 0, wx.ALL, 5 )
 
+		    gSizer7.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
+
+		    self.m_ccp4mg_abundance = wx.ToggleButton( self.pictures_abundance, wx.ID_ANY, u"see in ccp4mg", wx.DefaultPosition, wx.DefaultSize, 0 )
+		    gSizer7.Add( self.m_ccp4mg_abundance, 0, wx.ALL|wx.ALIGN_CENTER|wx.ALIGN_CENTER, 5 )
+
 		    self.pictures_abundance.SetSizer( gSizer7 )
 		    self.pictures_abundance.Layout()
+		    self.m_ccp4mg_abundance.Bind( wx.EVT_TOGGLEBUTTON, self.ccp4mg_abundance )
+
 		    gSizer7.Fit( self.pictures_abundance )
 		    self.notebook_1.AddPage( self.pictures_abundance, u"pictures abundance", False )
 
-		    self.pictures_entropy = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		    gSizer8 = wx.GridSizer( 3, 2, 0, 0 )
+		    self.pictures_entropy = wx.ScrolledWindow( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		    self.pictures_entropy.SetScrollRate( 5, 5 )
+		    gSizer8 = wx.GridSizer( 4, 2, 0, 0 )
 		    self.code0_ent = wx.Image(project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + "code0.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
 		    self.m_code0_ent = wx.StaticBitmap(self.pictures_entropy, -1, self.code0_ent, (10, 5), (self.code0_ent.GetWidth(), self.code0_ent.GetHeight()))
 		    gSizer8.Add( self.m_code0_ent, 0, wx.ALL, 5 )
@@ -206,11 +230,32 @@ class Scop3D ( wx.Frame ):
 		    self.m_code5_ent = wx.StaticBitmap(self.pictures_entropy, -1, self.code5_ent, (10, 5), (self.code5_ent.GetWidth(), self.code5_ent.GetHeight()))
 		    gSizer8.Add( self.m_code5_ent, 0, wx.ALL, 5 )
 
+		    gSizer8.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
+
+		    self.m_ccp4mg_entropy = wx.ToggleButton( self.pictures_entropy, wx.ID_ANY, u"see in ccp4mg", wx.DefaultPosition, wx.DefaultSize, 0 )
+		    gSizer8.Add( self.m_ccp4mg_entropy, 0, wx.ALL|wx.ALIGN_CENTER|wx.ALIGN_CENTER, 5 )
+
 		    self.pictures_entropy.SetSizer( gSizer8 )
 		    self.pictures_entropy.Layout()
+
+		    self.m_ccp4mg_entropy.Bind( wx.EVT_TOGGLEBUTTON, self.ccp4mg_entropy )
+
 		    gSizer8.Fit( self.pictures_entropy )
 		    self.notebook_1.AddPage( self.pictures_entropy, u"pictures entropy", False )
 
+		if _platform == "darwin" or os.path.exists(project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + "code1.png") == False:
+		    self.pictures_error = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		    gSizer200 = wx.GridSizer( 0, 1, 0, 0 )
+
+		    self.m_richText100 = wx.richtext.RichTextCtrl( self.pictures_error, wx.ID_ANY, errorpictures, wx.DefaultPosition, wx.DefaultSize, 0|wx.VSCROLL|wx.HSCROLL|wx.NO_BORDER|wx.WANTS_CHARS )
+		    gSizer200.Add( self.m_richText100, 1, wx.EXPAND |wx.ALL, 5 )
+
+
+		    self.pictures_error.SetSizer( gSizer200 )
+		    self.pictures_error.Layout()
+
+		    gSizer200.Fit( self.pictures_error )
+		    self.notebook_1.AddPage( self.pictures_error, u"pictures", False )
 		# self.notebook_1_pane_6 = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		# self.notebook_1.AddPage( self.notebook_1_pane_6, u"6", False )
 		# self.notebook_1_pane_7 = wx.Panel( self.notebook_1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
@@ -228,6 +273,28 @@ class Scop3D ( wx.Frame ):
 
 	def __del__( self ):
 		pass
+
+	if _platform == "win32":
+	    def ccp4mg_entropy (self, event):
+                ccmp4g_loc = ccp4mg_loc + spacer + "winccp4mg.exe"
+                code_in = project_dir + spacer + "Pictures" + spacer + "tmp-abundance" + spacer + "code0" + ".mgpic.py"
+                pic_out = project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + "code0" + ".png"
+                os.system("\"" + ccmp4g_loc + "\"" + " -norestore -picture " + code_in + " -R " + pic_out)
+        def ccp4mg_abundance (self, event):
+                ccmp4g_loc = ccp4mg_loc + spacer + "winccp4mg.exe"
+                code_in = project_dir + spacer + "Pictures" + spacer + "tmp-entropy" + spacer + "code0" + ".mgpic.py"
+                pic_out = project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + "code0" + ".png"
+                os.system("\"" + ccmp4g_loc + "\"" + " -norestore -picture " + code_in + " -R " + pic_out)
+	if _platform == "linux" or _platform == "linux2":
+	    def ccp4mg_entropy (self, event):
+	        cmd = ccp4mg_loc + spacer + "bin" + spacer + "ccp4mg"+ " -norestore -picture " + project_dir + spacer + "Pictures" + spacer + "tmp-entropy" + spacer + 'code0' + ".mgpic.py" + " -R " + project_dir + spacer + "Pictures" + spacer + "entropy" + spacer + 'code0' + ".png"
+	        os.system(cmd)
+
+	    def ccp4mg_abundance (self, event):
+	        cmd = ccp4mg_loc + spacer + "bin" + spacer + "ccp4mg"+ "  -norestore -picture " + project_dir + spacer + "Pictures" + spacer + "tmp-abundance" + spacer + 'code0' + ".mgpic.py" + " -R " + project_dir + spacer + "Pictures" + spacer + "abundance" + spacer + 'code0' + ".png"
+	        os.system(cmd)
+
+
 
 
 def main():
