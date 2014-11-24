@@ -316,9 +316,13 @@ def parse_pdb():
         pdb_cleanup(name, output)
     if output2 == 1:
         sequence_logo()
-        try:
-            convert()
-        except:
+        if _platform == "linux" or _platform == "linux2":
+            try:
+                convert()
+            except:
+                global conversion_fail
+                conversion_fail = "fail"
+        else:
             global conversion_fail
             conversion_fail = "fail"
 
