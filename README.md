@@ -45,6 +45,7 @@ See the [wiki](https://github.com/compomics/thermo-msf-parser/wiki) for addition
 ### System requirements
 [Python](www.drive5.com/muscle), [MUSCLE](www.ccp4.ac.uk/MG) and [CCP4mg](www.python.org) need to be installed.
 
+### Remarks
 !!! the use of the space character in file names or directory names should be avoided !!!
 !!! scop3D does not function when irregular characters are used !!!
 
