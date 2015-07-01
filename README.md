@@ -42,6 +42,14 @@ In this part, a PDB-file is needed. This file can be obtained from the PDB or an
 ## Usage
 See the [wiki](https://github.com/compomics/thermo-msf-parser/wiki) for additional information on how to use *Thermo MSF Parser*.
 
+### System requirements
+[Python](www.drive5.com/muscle), [MUSCLE](www.ccp4.ac.uk/MG) and [CCP4mg](www.python.org) need to be installed.
+
+!!! the use of the space character in file names or directory names should be avoided !!!
+!!! scop3D does not function when irregular characters are used !!!
+
+When large structures are being analysed, it is possible that only part of the structure is visualized. We therefore implemented the 'see ccp4mg' button in the image pages. This button allows you to start ccp4mg with your structure loaded. This then allows you to center the structure as you wish or to change the representation of the structure.
+
 [Go to top of page](#scop3d)
 
 ----
