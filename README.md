@@ -40,7 +40,7 @@ In this part, a PDB-file is needed. This file can be obtained from the PDB or an
 ----
 
 ## Usage
-See the [wiki](https://github.com/compomics/thermo-msf-parser/wiki) for additional information on how to use *Thermo MSF Parser*.
+See the [wiki](https://github.com/compomics/scop3d/wiki) for additional information on how to use scop3D.
 
 ### System requirements
 [Python](www.drive5.com/muscle), [MUSCLE](www.ccp4.ac.uk/MG) and [CCP4mg](www.python.org) need to be installed.
