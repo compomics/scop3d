@@ -13,6 +13,8 @@ Scop3D (Sequence Conservation On Protein 3D structure) allows the visualization 
 
 Scop3D is composed of two parts. The first part focuses on the analysis of sequence conservation, while the second part involves structural annotation.
 
+A command line version is available as well.
+
 ### Sequence analysis
 
 The starting point for the sequence analysis is a FASTA-file which contains all sequence variants of interest. These variants are aligned with MUSCLE. From the resulting multiple sequence alignment, the consensus sequence is constructed by retaining the most frequently found residue across all variant sequences for each position. This residue should be found more than the conservation threshold which is set be the user. Two matrices are created. The first matrix annotates the consensus sequence with the absolute abundance of each amino acid per position. In the second matrix, these numbers are converted into relative abundances in percent. Finally, a sequence logo is created with WebLogo.
