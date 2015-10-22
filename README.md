@@ -44,7 +44,7 @@ In this part, a PDB-file is needed. This file can be obtained from the PDB or an
 See the [wiki](https://github.com/compomics/scop3d/wiki) for additional information on how to use scop3D for both the graphical user interface and command line versions.
 
 ### System requirements
-[Python](www.drive5.com/muscle), [MUSCLE](www.ccp4.ac.uk/MG) and [CCP4mg](www.python.org) need to be installed.
+The requirements for the graphical user interface and command line version are currently different, please check the [wiki](https://github.com/compomics/scop3d/wiki).
 
 ### Remarks
 !!! the use of the space character in file names or directory names should be avoided !!!
