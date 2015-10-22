@@ -34,13 +34,14 @@ In this part, a PDB-file is needed. This file can be obtained from the PDB or an
   * [Scop3D for windows](http://genesis.ugent.be/colims/scop3D-Windows-Version)
   * [Scop3D for mac](http://genesis.ugent.be/downloadredirect.php?toolname=scop3D-mac)
   * [Scop3D for linux](http://genesis.ugent.be/downloadredirect.php?toolname=scop3D-linux)
+  * [Scop3D command line version](https://github.com/compomics/scop3d/blob/master/scop3D/command_line.py)
 
 [Go to top of page](#scop3d)
 
 ----
 
 ## Usage
-See the [wiki](https://github.com/compomics/scop3d/wiki) for additional information on how to use scop3D.
+See the [wiki](https://github.com/compomics/scop3d/wiki) for additional information on how to use scop3D for both the graphical user interface and command line versions.
 
 ### System requirements
 [Python](www.drive5.com/muscle), [MUSCLE](www.ccp4.ac.uk/MG) and [CCP4mg](www.python.org) need to be installed.
