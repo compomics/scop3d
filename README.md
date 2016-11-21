@@ -33,7 +33,7 @@ In this part, a PDB-file is needed. This file can be obtained from the PDB or an
 
 ## Downloads
 
-  * [Scop3D for windows](http://genesis.ugent.be/colims/scop3D-Windows-Version)
+  * [Scop3D for windows](http://genesis.ugent.be/colims/scop3D-Windows-Version.zip)
   * [Scop3D for mac](http://genesis.ugent.be/downloadredirect.php?toolname=scop3D-mac)
   * [Scop3D for linux](http://genesis.ugent.be/downloadredirect.php?toolname=scop3D-linux)
   * [Scop3D command line version](https://github.com/compomics/scop3d/blob/master/scop3D/command_line.py)
