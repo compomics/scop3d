@@ -39,12 +39,6 @@ def mkdirs(outputDir, verbose):
 	sequencesDir = tempfile.mkdtemp()
 	alignmentsDir = tempfile.mkdtemp()
 	chainSequencesDir = tempfile.mkdtemp()
-	if verbose:
-		print("Using following directories:")
-		print("output: " + outputDir)
-		print("sequences: " + sequencesDir)
-		print("alignments: " + alignmentsDir)
-		print("chains: " + chainSequencesDir)
 	return (sequencesDir, alignmentsDir, chainSequencesDir)
 
 # 1. Retrieval of data input
@@ -77,7 +71,7 @@ def downloadUniprotSequences(uniprotID, blastFile, sequencesFile, cutoff, verbos
 	print('OK')
 
 def loadSequences(sequencesFile, verbose):
-	print('Loading sequences from ' + sequencesFile + '...')
+	print('Loading sequences...')
 	sequences = list(SeqIO.parse(sequencesFile, "fasta"))
 	count = len(sequences)
 	if count == 0:
@@ -95,8 +89,6 @@ def loadSequences(sequencesFile, verbose):
 def doAlignment(sequencesFile, alignmentFile, verbose):
 	print('Performing sequence alignment...')
 	params = ['muscle', '-in', sequencesFile, '-out', alignmentFile, '-clwstrict']
-	if verbose:
-		print('Writing alignment to: ' + alignmentFile)
 	else:
 		params.append('-quiet')
 	subprocess.check_call(params)
@@ -107,8 +99,6 @@ def doAlignment(sequencesFile, alignmentFile, verbose):
 # 			 Trends in Genetics 16(6), 276-277
 def doSplit(sequencesFile, sequencesDir, verbose):
 	print('Splitting fasta file into individual sequences...')
-	if verbose:
-		print('Output directory: ' + sequencesDir)
 	subprocess.check_call(['seqretsplit', '-feature', '0', '-sequence', sequencesFile, '-firstonly', '0', '-auto', '-osdirectory2', sequencesDir])
 	print('OK');
 
@@ -117,8 +107,6 @@ def doSplit(sequencesFile, sequencesDir, verbose):
 #			 J Mol Biol 48(3), 443-453
 def doPairwiseAlignment(sequencesDir, alignmentsDir, verbose):
 	print('Performing a pairwise alignment...')
-	if verbose:
-		print('Output directory: ' + alignmentsDir)
 	for sequenceFile1 in os.listdir(sequencesDir):
 		if not sequenceFile1.endswith('fasta'):
 			continue
@@ -136,8 +124,6 @@ def doPairwiseAlignment(sequencesDir, alignmentsDir, verbose):
 # 5. Similarity and identity between the different sequences is retrieved
 def calcIdentitySimilarity(alignmentsDir, alignmentStatsFile, verbose):
 	print('Getting identity and similarity...')
-	if verbose:
-		print('Writing statistics to: ' + alignmentStatsFile)
 	with open(alignmentStatsFile, 'w') as stats:
 		writer = csv.writer(stats, dialect='excel-tab')
 		for alignmentFile in os.listdir(alignmentsDir):
@@ -164,8 +150,6 @@ def calcIdentitySimilarity(alignmentsDir, alignmentStatsFile, verbose):
 # 			 Trends in Genetics 16(6), 276-277
 def calcConsensus(alignmentFile, consensusFile, verbose):
 	print("Calculating of the consensus sequence...")
-	if verbose:
-		print('Writing sequence to: ' + consensusFile)
 	subprocess.check_call(['cons', '-sequence', alignmentFile, '-plurality', '1', '-identity', '0', '-auto', '-outseq', consensusFile, '-name', 'consensus'])
 	if verbose:
 		consensusSeq = SeqIO.read(consensusFile, 'fasta')
@@ -183,7 +167,6 @@ def calcAbundance(alignmentFile, consensusFile, abundanceFile, abundancePercentF
 	if verbose:
 		print("Abundance matrix (absolute values):")
 		print(str(abundanceMatrix))
-		print("Saved as: " + abundanceFile)
 	with open(abundanceFile, 'w') as f:
 		f.write(str(abundanceMatrix))
 	for pos, abundance in enumerate(abundanceMatrix):
@@ -192,7 +175,6 @@ def calcAbundance(alignmentFile, consensusFile, abundanceFile, abundancePercentF
 	if verbose:
 		print("Abundance matrix (percentages):")
 		print(str(abundanceMatrix))
-		print("Saved as: " + abundancePercentFile)
 	with open(abundancePercentFile, 'w') as f:
 		f.write(str(abundanceMatrix))
 	print('OK')
@@ -263,8 +245,6 @@ def drawWeblogo(alignmentFile, logoFile, verbose):
 	with open(logoFile, "w") as f:
 		png = png_formatter(data, format)
 		f.write(png)
-	if verbose:
-		print('Logo saved as: ' + logoFile)
 	print('OK')
 
 ### Stage 2
