@@ -89,7 +89,7 @@ def loadSequences(sequencesFile, verbose):
 def doAlignment(sequencesFile, alignmentFile, verbose):
 	print('Performing sequence alignment...')
 	params = ['muscle', '-in', sequencesFile, '-out', alignmentFile, '-clwstrict']
-	else:
+	if not verbose:
 		params.append('-quiet')
 	subprocess.check_call(params)
 	print('OK')
