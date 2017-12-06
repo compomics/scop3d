@@ -97,7 +97,10 @@ try:
 				exit('SNP variants analysis works only with Uniprot identifier. Please specify it using -u/--uniprotid option.')
 
 			myArgs.uniprotid = myArgs.uniprotid.upper()
-			variants = Scop3dWorker.getUniprotVariants(myArgs.uniprotid, myVariantsOutput, myUniprotSequenceOutput, myVerbose)
+			try:
+				variants = Scop3dWorker.getUniprotVariants(myArgs.uniprotid, myVariantsOutput, myUniprotSequenceOutput, myVerbose)
+			except Exception as e:
+				exit('Unable to download variants from UniprotID. Is it possible that this UniprotID has no known variants?')
 			step(11)
 
 			Scop3dWorker.calcFrequencyType(variants, myVariantsFrequencyOutput, myVerbose)
