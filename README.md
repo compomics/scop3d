@@ -1,7 +1,9 @@
-# Scop3D
+# Scop3D v3
 
  * [Project Description](#project-description)
  * [Usage](#usage)
+ * [System requirements](#system-requirements)
+ * [Previous version](#previous-version)
  * [Project Support](#project-support)
 
 ----
@@ -11,6 +13,10 @@
 Scop3D (Sequence Conservation On Protein 3D structure) allows the visualization of sequence variation of a protein on its structure.
 
 Scop3D is composed of two parts. The first part focuses on the analysis of sequence conservation or SNP variants, while the second part involves structural annotation. There is also an intermediate blast step available.
+
+**New in version 3:** 
+* added analysis of sequence SNP variants
+* refreshed command line interface
 
 ### Sequence analysis
 
@@ -29,8 +35,6 @@ For SNP variants analysis in the first PDB-file, the B-values are replaced by th
 ### Citation
  * [Vermeire and Vermaere et al.: Proteomics. 2015 Apr;15(8):1448-52.](http://www.ncbi.nlm.nih.gov/pubmed/25641949)
  * If you use scop3D as part of a paper, please include the reference above.
-
-[Go to top of page](#scop3d)
 
 ----
 
@@ -64,7 +68,13 @@ Couple of typical flows are shown below:
 # ./scop3d structure -var -w ~/outputdir -f 4F15.pdb
 ```
 
-### System requirements
+### Remarks
+
+Please use -w to bundle all output/input files in one directory. The subsequent runs will search for input files in this directory.
+
+----
+
+## System requirements
 
 * Python >= 2.7
 * Biopython
@@ -72,10 +82,11 @@ Couple of typical flows are shown below:
 * Muscle
 * Emboss
 
+----
 
-### Remarks
+## Previous version
 
-Please use -w to bundle all output/input files in one directory. The subsequent runs will search for input files in this directory.
+The documentation for previous version of the tool (including binaries for windows, linux, mac) can be found under [https://github.com/compomics/scop3d](https://github.com/compomics/scop3d)
 
 ----
 
@@ -88,4 +99,4 @@ The scop3D project is grateful for the support by:
 * [VIB](http://www.vib.be)
 * [Ghent University](http://www.ugent.be)
 
-[Go to top of page](#scop3d)
+[Go to top of page](#scop3d-v3)

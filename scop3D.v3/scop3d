@@ -6,6 +6,7 @@ import argparse
 import os
 import shutil
 import sys, traceback
+import json
 
 from Bio.PDB import PDBParser
 from Bio.PDB import PDBIO
@@ -74,8 +75,11 @@ myEntropyPDBOutput			= os.path.join(myWorkdir, 'pdb_entropy.ent')
 myConservationPDBOutput		= os.path.join(myWorkdir, 'pdb_conservation.ent')
 myFrequencyPDBOutput		= os.path.join(myWorkdir, 'pdb_frequency.ent')
 myTypePDBOutput				= os.path.join(myWorkdir, 'pdb_type.ent')
-myVariantsOutput			= os.path.join(myWorkdir, 'variants.json')
+myUniprotVariantsOutput		= os.path.join(myWorkdir, 'uniprot_variants.json')
+myUniprotRecordOutput		= os.path.join(myWorkdir, 'uniprot_record.json')
+myEnsemblVariantsOutput		= os.path.join(myWorkdir, 'ensembl_variants.txt')
 myVariantsFrequencyOutput	= os.path.join(myWorkdir, 'variants_frequency_type.txt')
+mySNPPDBTypeDataOutput		= os.path.join(myWorkdir, 'snp_pdb_type.json')
 myVerbose					= myArgs.verbose
 myAction 					= myArgs.action
 
@@ -97,13 +101,22 @@ try:
 				exit('SNP variants analysis works only with Uniprot identifier. Please specify it using -u/--uniprotid option.')
 
 			myArgs.uniprotid = myArgs.uniprotid.upper()
-			try:
-				variants = Scop3dWorker.getUniprotVariants(myArgs.uniprotid, myVariantsOutput, myUniprotSequenceOutput, myVerbose)
-			except Exception as e:
-				exit('Unable to download variants from UniprotID. Is it possible that this UniprotID has no known variants?')
+			(ensemblID, organism) = Scop3dWorker.getUniprotRecord(myArgs.uniprotid, myUniprotRecordOutput, myUniprotSequenceOutput)
+			step(8)
+			ensemblVariants = Scop3dWorker.getEnsemblVariants(organism, ensemblID, myEnsemblVariantsOutput, myVerbose)
+			step(9)
+			(uniprotVariants, xrefIndex) = Scop3dWorker.getUniprotVariants(myArgs.uniprotid, myUniprotVariantsOutput, myVerbose)
+			step(10)
+			for position, variants in ensemblVariants.iteritems():
+				skip = False
+				for variant in variants:
+					if variant['id'] not in xrefIndex:
+						if position not in uniprotVariants:
+							uniprotVariants[position] = []
+						uniprotVariants[position].append(variant);
 			step(11)
 
-			Scop3dWorker.calcFrequencyType(variants, myVariantsFrequencyOutput, myVerbose)
+			Scop3dWorker.calcFrequencyType(uniprotVariants, myUniprotSequenceOutput, myVariantsFrequencyOutput, myVerbose)
 			step(12)
 
 		if myArgs.entropy:
@@ -217,8 +230,10 @@ try:
 			Scop3dWorker.savePDB(structure, myFrequencyPDBOutput, description="SNP frequency")
 			step(21)
 
-			Scop3dWorker.changeBfactors(structure, adjustChains, snpType, myArgs.verbose, 0)
-			Scop3dWorker.savePDB(structure, myTypePDBOutput, description="SNP type")
+			pdbData = Scop3dWorker.extractPDBdata(structure, adjustChains, snpType, myArgs.verbose)
+			with open(mySNPPDBTypeDataOutput, 'w') as f:
+				pdbDataJson = json.dumps(pdbData, indent=4, sort_keys=True)
+				f.write(pdbDataJson + "\n");
 			step(22)
 
 except Exception as e:
