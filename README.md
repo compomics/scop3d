@@ -22,7 +22,7 @@ Scop3D is composed of two parts. The first part focuses on the analysis of seque
 
 The starting point for the sequence conservation analysis is a FASTA-file which contains all sequence variants of interest. It is also possible to download sequence variants using UniprotID - the sequence will be blasted and cutoff value applied. These variants are aligned with MUSCLE. From the resulting multiple sequence alignment, the consensus sequence is constructed by retaining the most frequently found residue across all variant sequences for each position. This residue should be found more than the conservation threshold which is set be the user. Two matrices are created. The first matrix annotates the consensus sequence with the absolute abundance of each amino acid per position. In the second matrix, these numbers are converted into relative abundances in percent. Finally, a sequence logo is created with WebLogo.
 
-The SNP variants analysis is based on Uniprot data, and therefore UniprotID is needed. The varians data is downloaded from the Uniprot database. Using this info a matrix is created, annotating the protein sequence with the frequency, variants and type. Based on that the sequence is coloured accordingly.
+The SNP variants analysis is based on Ensembl and Uniprot data, and therefore UniprotID is needed. The varians data is downloaded from the Uniprot database as well as Ensembl database. Using this info a matrix is created, annotating the protein sequence with the frequency, variants and type. Based on that the sequence is coloured accordingly.
 
 ### Structure annotation
 
@@ -77,7 +77,10 @@ Please use -w to bundle all output/input files in one directory. The subsequent 
 ## System requirements
 
 * Python >= 2.7
+* Perl >= 5
 * Biopython
+* Bioperl
+* Ensembl Perl API
 * Weblogo
 * Muscle
 * Emboss
