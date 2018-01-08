@@ -8,6 +8,7 @@ import json
 import subprocess
 import tempfile
 import urllib2
+from lxml import etree
 
 from Bio import AlignIO
 from Bio import ExPASy
@@ -21,6 +22,9 @@ from Bio.Blast import NCBIWWW
 from Bio.Blast import NCBIXML
 from Bio.PDB import PDBList
 from Bio.PDB import PDBIO
+from Bio.PDB import Select
+from Bio.PDB import Residue
+from Bio.PDB import Atom
 from Bio.PDB.Polypeptide import PPBuilder
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
@@ -440,26 +444,16 @@ def getChainFrequencyTypeData(pdbID, frequencyTypeFile, chainSequencesDir, adjus
 				if sequenceResidues[i] != '-':
 					if consensusResidues[i] == '-':
 						frequencyScore = 0
-						typeScore = 0
+						types = '-'
 					else:
 						line = mySNPlines[ci][:-1]
 						words = line.split('\t')
 						frequencyScore = int(words[1])
-						types = words[3].split(',')
-						typeScoreTable = {}
-						typeScore = 0
-						for t in types:
-							typeScoreTable[t] = 1
-						if 'missense' in typeScoreTable:
-							typeScore += 1
-						if 'stop_lost' in typeScoreTable:
-							typeScore += 2
-						if 'stop_gained' in typeScoreTable:
-							typeScore += 4
+						types = words[3]
 						ci+=1
 					frequencyData[chain].append([sequenceResidues[i], frequencyScore])
-					typeData[chain].append([sequenceResidues[i], typeScore])
-					writer.writerow([sequenceResidues[i], consensusResidues[i], frequencyScore, typeScore])
+					typeData[chain].append([sequenceResidues[i], types])
+					writer.writerow([sequenceResidues[i], consensusResidues[i], frequencyScore, types])
 				else:
 					#TODO: what then ?
 					if consensusResidues[i] != '-':
@@ -477,15 +471,26 @@ def changeBfactors(structure, adjustChains, substitutionData, verbose, noDataVal
 				for residue in chain:
 					residueName = SeqUtils.seq1(residue.get_resname())
 					if residueName != substitutionData[chainID][residueID][0]:
+						if verbose:
+							print("WARNING: Unexpected residue " + str(residueID) + " in chain " + str(chainID))
+							print("Expected residue " + substitutionData[chainID][residueID][0] + " got " + residueName)
 						continue
 					(heteroFlag, sequenceID, insertionCode) = residue.get_id()
 					if heteroFlag != ' ':
 						continue
 					for atom in residue:
 						value = float(substitutionData[chainID][residueID][1])
-						if verbose:
-							print("Chain: " + chainID + "\t residue: " + residueName + "\t atom: " + atom.get_id() + "\t b-factor: " + str(atom.get_bfactor()) + " => " + str(value))
-						atom.set_bfactor(value)
+						if atom.is_disordered():
+							atom.__class__ = Atom.DisorderedAtom
+							for altloc in atom.disordered_get_id_list():
+								a = atom.disordered_get(altloc)
+								if verbose:
+									print("Chain: " + chainID + "\t residue: " + residueName + "\t atom: " + str(a.get_full_id()) + " \t b-factor: " + str(a.get_bfactor()) + " => " + str(value))
+								a.set_bfactor(value)
+						else:
+							if verbose:
+								print("Chain: " + chainID + "\t residue: " + residueName + "\t atom: " + str(atom.get_full_id()) + " \t b-factor: " + str(atom.get_bfactor()) + " => " + str(value))
+							atom.set_bfactor(value)
 					residueID += 1
 					if (residueID >= len(substitutionData[chainID])):
 						break
@@ -496,7 +501,60 @@ def changeBfactors(structure, adjustChains, substitutionData, verbose, noDataVal
 	print('OK')
 	return structure
 
-def getUniprotVariants(uniprotID, variantsFile, sequenceFile, verbose):
+def extractPDBdata(structure, adjustChains, substitutionData, verbose):
+	print('Extracting atoms details from PDB...')
+	pdbData = {}
+	for model in structure:
+		for chain in model:
+			chainID = chain.get_id()
+			if chainID in adjustChains:
+				pdbData[chainID] = {}
+				residueID = 0
+				for residue in chain:
+					residueName = SeqUtils.seq1(residue.get_resname())
+					if residueName != substitutionData[chainID][residueID][0]:
+						continue
+					(heteroFlag, sequenceID, insertionCode) = residue.get_id()
+					if heteroFlag != ' ':
+						continue
+					value = substitutionData[chainID][residueID][1]
+					if value != "-":
+						pdbData[chainID][sequenceID] = value
+					if verbose:
+						print("Chain: " + chainID + "\t residue: " + residueName + " " + str(sequenceID) + "\t value: " + value)
+					residueID += 1
+					if (residueID >= len(substitutionData[chainID])):
+						break
+	print('OK')
+	return pdbData
+
+def getUniprotRecord(uniprotID, recordFile, sequenceFile):
+	print("Downloading record for " + uniprotID + " from UniProt...")
+	response = urllib2.urlopen('https://www.ebi.ac.uk/proteins/api/proteins/' + uniprotID)
+	proteinJson = response.read()
+	protein = json.loads(proteinJson)
+	with open(recordFile, 'w') as f:
+		proteinJson = json.dumps(protein, indent=4, sort_keys=True)
+		f.write(proteinJson + "\n");
+	ensemblID = None
+	for ref in protein['dbReferences']:
+		if ref['type'] == 'Ensembl':
+			ensemblID = ref['id']
+	if ensemblID == None:
+		raise Exception('Protein record in Uniprot does not have reference to Ensembl')
+	organism = protein['organism']['names']
+	organismName = ''
+	for o in organism:
+		if o['type'] == 'scientific':
+			organismName = o['value']
+			break
+	record = SeqRecord( Seq(protein['sequence']['sequence'], IUPAC.protein), id=protein['accession'], name=protein['id'], description=protein['id'])
+	with open(sequenceFile, "w") as f:
+		SeqIO.write([record], f, "fasta")
+	print('OK')
+	return ensemblID, organismName
+
+def getUniprotVariants(uniprotID, variantsFile, verbose):
 	print("Downloading record for " + uniprotID + " from UniProt...")
 	response = urllib2.urlopen('https://www.ebi.ac.uk/proteins/api/variation/' + uniprotID)
 	variantsJson = response.read()
@@ -504,59 +562,115 @@ def getUniprotVariants(uniprotID, variantsFile, sequenceFile, verbose):
 	with open(variantsFile, 'w') as f:
 		variantsJson = json.dumps(variants, indent=4, sort_keys=True)
 		f.write(variantsJson + "\n");
-	record = SeqRecord( Seq(variants['sequence'], IUPAC.protein), id=variants['accession'], name=variants['entryName'], description=variants['entryName'])
-	with open(sequenceFile, "w") as f:
-  		SeqIO.write([record], f, "fasta")
 	if verbose:
 		print ("Protein " + variants['accession'] + " " + variants['entryName'] + " has " + str(len(variants['features'])) + " features.")
+	features = {}
+	xrefIndex = {}
+	for feature in variants['features']:
+		variant = {
+			'id': "",
+			'xrefs': {}
+		}
+		featureID = ""
+		if 'ftId' in feature:
+			variant['id'] = feature['ftId']
+			featureID += feature['ftId']
+		if 'genomicLocation' in feature:
+			featureID += "(" + feature['genomicLocation'] + ")";
+		if 'begin' not in feature:
+			print("WARNING: feature " + featureID + " begin is not defined - skipping...")
+			continue
+		skip = False;
+		if 'xrefs' in feature:
+			for xref in feature['xrefs']:
+				variant['xrefs'][xref['id']] = xref['id']
+				xrefIndex[xref['id']] = xref['id']
+		position = int(feature['begin'])
+		variant['position'] = position
+		variant['wildType'] = feature['wildType']
+		variant['alternativeSequence'] = feature['alternativeSequence']
+		variant['consequence']= feature['consequenceType']
+		if (position not in features):
+			features[position] = []
+		features[position].append(variant)
+		if verbose:
+			print('Adding feature ' + featureID + " at position " + str(position) + " ids: " + repr(variant['xrefs']))
+	print('OK')
+	return (features, xrefIndex)
+
+def getEnsemblVariants(organismName, ensemblID, variantsFile, verbose):
+	print("Getting variants data from EnsemblID " + ensemblID)
+	with open(variantsFile, 'w') as f:
+		subprocess.check_call(['perl', os.path.dirname(os.path.abspath(__file__)) + '/../ensembl.pl', organismName, ensemblID], stdout=f)
+	variants = {}
+	with open(variantsFile, 'r') as f:
+		features = f.readlines()
+	for feature in features:
+		feature = feature[:-1].split("\t")
+		if feature[1] == 'HGMD_MUTATION':
+			continue;
+		position = int(feature[4].split(' ')[0])
+		print('Adding feature at position '+ str(position) + ' : ' + repr(feature))
+		sequence = feature[5].split('/')
+		if len(sequence) == 2:
+			alternativeSequence = sequence[1]
+		else:
+			alternativeSequence = sequence[0]
+		variant = {
+			'id': feature[0],
+			'dbSNP': feature[0],
+			'position' : position,
+			'wildType' : sequence[0],
+			'alternativeSequence' : alternativeSequence,
+			'consequence' : feature[3]
+		}
+		if (position not in variants):
+			variants[position] = []
+		variants[position].append(variant)
 	print('OK')
 	return variants
 
-def calcFrequencyType(variants, outputFile, verbose):
+def calcFrequencyType(features, sequenceFile, outputFile, verbose):
 	print("Calculating SNP frequency...")
-	if verbose:
-		print('Reading variants...')
-	features = {};
-	for feature in variants['features']:
-		featureID = "";
-		if 'ftId' in feature:
-			featureID += feature['ftId'];
-		if 'genomicLocation' in feature:
-			featureID += "(" + feature['genomicLocation'] + ")";
-		if ('begin' not in feature) or ('end' not in feature):
-			print("WARNING: feature " + featureID + " begin and/or end are not defined - skipping...")
-			continue
-		if (feature['begin'] != feature['end']):
-			print("WARNING: feature " + featureID + " begin and end are different - skipping...")
-			continue
-		position = int(feature['begin'])
-		if (position not in features):
-			features[position] = []
-		features[position].append(feature)
-		if verbose:
-			print('Adding feature ' + featureID + " at position " + str(position))
-	if verbose:
-		print('Analyzing sequence...')
+	sequence = SeqIO.read(sequenceFile, "fasta")
 	with open(outputFile, 'w') as f:
 		writer = csv.writer(f, dialect='excel-tab')
-		writer.writerow(['residue','freq','variants', 'type'])
-		for residueID, residue in enumerate(variants['sequence']):
+		writer.writerow(['residue','freq','variants', 'type', 'ids'])
+		for residueID, residue in enumerate(sequence.seq):
+			position = residueID + 1;
 			freq = 0
 			change = []
 			snptype = []
-			if residueID in features:
-				freq = len(features[residueID])
-				for f in features[residueID]:
+			ids = []
+			if position in features:
+				freq = len(features[position])
+				for f in features[position]:
+					if residue != f['wildType'][0]:
+						print("WARNING: sequence does not match: residue " + residue + " feature " + repr(f))
 					change.append(f['alternativeSequence'])
-					snptype.append(f['consequenceType'])
+					snptype.append(f['consequence'])
+					fid = f['id']
+					if 'xrefs' in f:
+						fid += '(';
+						fid += ",".join(str(v) for v in f['xrefs'].values());
+						fid += ')';
+					ids.append(fid)
+				if len(change) != freq:
+					print "WARNING: frequency different than number of changes"
+				if len(snptype) != freq:
+					print "WARNING: frequency different than number of types"
+				if len(ids) != freq:
+					print "WARNING: frequency different than number of ids"
 			else:
+				ids.append('-')
 				change.append('-')
 				snptype.append('-')
 			change = ",".join(change)
 			snptype = ",".join(snptype)
+			ids = ",".join(ids)
 			if verbose:
-				print("Position: " + str(residueID + 1) + " residue: " + residue + " frequency: " + str(freq) + " variants: " + change + " type: " + snptype)
-			writer.writerow([residue, freq, change, snptype])
+				print("Position: " + str(position) + " residue: " + residue + " frequency: " + str(freq) + " variants: " + change + " type: " + snptype)
+			writer.writerow([residue, freq, change, snptype, ids])
 	print('OK')
 
 def savePDB(structure, outputFile, description = ""):
