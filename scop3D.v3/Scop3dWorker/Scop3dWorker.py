@@ -609,7 +609,10 @@ def getEnsemblVariants(organismName, ensemblID, variantsFile, verbose):
 		feature = feature[:-1].split("\t")
 		if feature[1] == 'HGMD_MUTATION':
 			continue;
-		position = int(feature[4].split(' ')[0])
+		try :
+			position = int(feature[4].split(' ')[0])
+		except ValueError:
+			position = int(feature[4].split(' ')[1])
 		print('Adding feature at position '+ str(position) + ' : ' + repr(feature))
 		sequence = feature[5].split('/')
 		if len(sequence) == 2:
