@@ -39,8 +39,9 @@ group.add_argument('-ent', '--entropy', action='store_true', help='analyse seque
 group.add_argument('-var', '--variants', action='store_true', help='analyse sequence variants (score accordingly to SNP frequency and type) (works only with -u)')
 group = parserSequence.add_mutually_exclusive_group(required=True)
 group.add_argument('-f', '--fastafile', help='fasta file with protein sequences to be analyzed')
-group.add_argument('-u', '--uniprotid', help='uniprot id of protein to')
-parserSequence.add_argument('-t', '--cutoff', metavar='value', default=60.0, type=float, help='identity cutoff for selecting sequences after uniprot blast, default 90 (works only with -u)')
+group.add_argument('-u', '--uniprotid', help='uniprot id of protein to be blasted')
+group.add_argument('-s', '--sequencefile', help='file containing sequence to be blasted')
+parserSequence.add_argument('-t', '--cutoff', metavar='value', default=60.0, type=float, help='identity cutoff for selecting sequences after uniprot blast, default 90 (works with -u, -s)')
 
 parserStructure = subparsers.add_parser('structure', help='superimpose sequence analysis results on PDB structure')
 parserStructure.add_argument('-v', '--verbose', action='store_true', help='print processing info on console')
@@ -125,6 +126,13 @@ try:
 				Scop3dWorker.doUniprotBlast(myArgs.uniprotid, myUniprotOutput, myVerbose)
 				step(1)
 				Scop3dWorker.downloadUniprotSequences(myArgs.uniprotid, myUniprotOutput, mySequencesOutput, myArgs.cutoff, myVerbose)
+				step(2)
+			elif (myArgs.sequencefile != None):
+				with open(myArgs.sequencefile, 'r') as f:
+					sequence = f.read();
+				Scop3dWorker.doUniprotBlast(sequence, myUniprotOutput, myVerbose)
+				step(1)
+				Scop3dWorker.downloadUniprotSequences(None, myUniprotOutput, mySequencesOutput, myArgs.cutoff, myVerbose)
 				step(2)
 			else:
 				mySequencesOutput = myArgs.fastafile

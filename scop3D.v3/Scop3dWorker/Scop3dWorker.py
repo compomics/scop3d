@@ -53,8 +53,9 @@ def downloadUniprotSequences(uniprotID, blastFile, sequencesFile, cutoff, verbos
 	if verbose:
 		print('Found ' + str(len(records.alignments)) + ' matches')
 	with open(sequencesFile, 'w') as f:
-		sequence = urllib2.urlopen('http://www.uniprot.org/uniprot/' + uniprotID + '.fasta')
-		f.write(sequence.read() + "\n");
+		if uniprotID != None:
+			sequence = urllib2.urlopen('http://www.uniprot.org/uniprot/' + uniprotID + '.fasta')
+			f.write(sequence.read() + "\n");
 		for idx, alignment in enumerate(records.alignments):
 			for hsp in alignment.hsps:
 				title = alignment.title
@@ -228,7 +229,9 @@ def calcVariation(abundancePercentFile, consensusAbundanceVariationFile, verbose
 		for line in abundancePercentLines[1:]:
 			words = line.split()
 			residue = words[0]
-			maximum = float(max(words[1:]))
+			for i in range(1, len(words)): 
+				words[i] = float(words[i])
+			maximum = max(words[1:])
 			variation = 100 - maximum
 			writer.writerow([residue, round(maximum, 1), round(variation, 1)])
 			if verbose:
@@ -338,12 +341,12 @@ def selectChains(pdbID, chainSequencesDir, verbose):
 				for line in f.readlines():
 					if line.startswith('# Identity:'):
 						words = line.split()
-						chainIdentity[chain] = words[3][1:-2]
+						chainIdentity[chain] = float(words[3][1:-2])
 	if verbose:
 		print('Chain identity values: ')
 	for chain, value in chainIdentity.items():
 		if verbose:
-			print(chain + " - " + value + "%")
+			print(chain + " - " + str(value) + "%")
 		if (value == max(chainIdentity.values())):
 			adjustChains.append(chain)
 	if verbose:
