@@ -58,7 +58,11 @@ myArgs 						= parser.parse_args()
 myWorkdir					= myArgs.workdir
 myPidOutput 				= os.path.join(myWorkdir, 'scop3d.pid')
 mySequencesOutput 			= os.path.join(myWorkdir, 'sequences.fasta')
+myTranslatedSeqOutput 		= os.path.join(myWorkdir, 'seqprot.fasta')
+myVCFOutput	                = os.path.join(myWorkdir, 'snps.vcf')
 myConsensusOutput 			= os.path.join(myWorkdir, 'consensus.fasta')
+myTranslatedConsOutput		= os.path.join(myWorkdir, 'transcons.fasta')
+myProtConsOutput			= os.path.join(myWorkdir, 'consprot.fasta')
 myUniprotSequenceOutput		= os.path.join(myWorkdir, 'uniprot.fasta')
 myAbundanceOutput 			= os.path.join(myWorkdir, 'abundance_matrix.txt')
 myAbundancePercentOutput 	= os.path.join(myWorkdir, 'abundance_percentage_matrix.txt')
@@ -66,10 +70,13 @@ myEntropyOutput 			= os.path.join(myWorkdir, 'consensus_entropy.txt')
 myVariationOutput 			= os.path.join(myWorkdir, 'consensus_abundance_variation.txt')
 myLogoOutput 				= os.path.join(myWorkdir, 'logo.png')
 myUniprotOutput 			= os.path.join(myWorkdir, 'uniprot_results.xml')
+myNCBIOutput	 			= os.path.join(myWorkdir, 'ncbi_results.xml')
 myBlastOutput 				= os.path.join(myWorkdir, 'blast_results.xml')
 myBlastSummaryOutput 		= os.path.join(myWorkdir, 'blast_summary.txt')
 myChainsOutput			 	= os.path.join(myWorkdir, 'chains.out')
 myAlignmentOutput 			= os.path.join(myWorkdir, 'msa.clustalw')
+myFastaAlignmentOutput		= os.path.join(myWorkdir, 'msa.fasta')
+myTranslatedAlnOutput		= os.path.join(myWorkdir, 'msaprot.clustalw')
 myAligmentStatsOutput 		= os.path.join(myWorkdir, 'pairwise_stats.txt')
 myProgressOutput			= os.path.join(myWorkdir, 'progress.txt')
 myEntropyPDBOutput			= os.path.join(myWorkdir, 'pdb_entropy.ent')
@@ -87,38 +94,64 @@ myAction 					= myArgs.action
 
 def step(progress):
 	with open(myProgressOutput, 'w', 0) as f:
-		f.write(str(progress));
+		f.write(str(progress))
 
 try:
 	(sequencesDir, alignmentsDir, chainSequencesDir) = Scop3dWorker.mkdirs(myWorkdir, myVerbose)
 	with open(myPidOutput, 'w', 0) as f:
-		f.write(str(os.getpid()));
+		f.write(str(os.getpid()))
 
 	if myAction == 'sequence':
 
 		if myArgs.variants:
 
-			if myArgs.uniprotid == None:
-				exit('SNP variants analysis works only with Uniprot identifier. Please specify it using -u/--uniprotid option.')
+			if myArgs.uniprotid != None:
+				myArgs.uniprotid = myArgs.uniprotid.upper()
+				(ensemblID, organism) = Scop3dWorker.getUniprotRecord(myArgs.uniprotid, myUniprotRecordOutput, myConsensusOutput)
+				step(8)
+				ensemblVariants = Scop3dWorker.getEnsemblVariants(organism, ensemblID, myEnsemblVariantsOutput, myVerbose)
+				step(9)
+				(uniprotVariants, xrefIndex) = Scop3dWorker.getUniprotVariants(myArgs.uniprotid, myUniprotVariantsOutput, myVerbose)
+				step(10)
+				for position, variants in ensemblVariants.iteritems():
+					skip = False
+					for variant in variants:
+						if variant['id'] not in xrefIndex:
+							if position not in uniprotVariants:
+								uniprotVariants[position] = []
+							uniprotVariants[position].append(variant)
+				step(11)
 
-			myArgs.uniprotid = myArgs.uniprotid.upper()
-			(ensemblID, organism) = Scop3dWorker.getUniprotRecord(myArgs.uniprotid, myUniprotRecordOutput, myUniprotSequenceOutput)
-			step(8)
-			ensemblVariants = Scop3dWorker.getEnsemblVariants(organism, ensemblID, myEnsemblVariantsOutput, myVerbose)
-			step(9)
-			(uniprotVariants, xrefIndex) = Scop3dWorker.getUniprotVariants(myArgs.uniprotid, myUniprotVariantsOutput, myVerbose)
-			step(10)
-			for position, variants in ensemblVariants.iteritems():
-				skip = False
-				for variant in variants:
-					if variant['id'] not in xrefIndex:
-						if position not in uniprotVariants:
-							uniprotVariants[position] = []
-						uniprotVariants[position].append(variant);
-			step(11)
+				Scop3dWorker.calcFrequencyType(uniprotVariants, myConsensusOutput, myVariantsFrequencyOutput, myVerbose)
+				step(12)
+			else: 
+				if myArgs.sequencefile != None:
+					with open(myArgs.sequencefile, 'r') as f:
+						sequence = f.read()
+					Scop3dWorker.doNCBIBlast(sequence, myNCBIOutput, myVerbose)
+					step(1)
+					Scop3dWorker.downloadNCBISequences(myNCBIOutput, mySequencesOutput, myArgs.cutoff, myVerbose)
+					step(2)
+				elif myArgs.fastafile != None:
+					mySequencesOutput = myArgs.fastafile
+					step(2)
+				else:
+					exit('Please specify one of -f, -s or -u flags')
 
-			Scop3dWorker.calcFrequencyType(uniprotVariants, myUniprotSequenceOutput, myVariantsFrequencyOutput, myVerbose)
-			step(12)
+				sequencesCount = Scop3dWorker.loadSequences(mySequencesOutput, myVerbose)
+				step(3)
+
+				Scop3dWorker.translateSequences(mySequencesOutput, myTranslatedSeqOutput, myVerbose)
+				step(4)
+
+				Scop3dWorker.doAlignment(myTranslatedSeqOutput, myTranslatedAlnOutput, myVerbose)
+				step(5)
+
+				Scop3dWorker.calcConsensus(myTranslatedAlnOutput, myConsensusOutput, myVerbose)
+				step(6)
+
+				Scop3dWorker.callVariants(mySequencesOutput, myTranslatedAlnOutput, myConsensusOutput, myVariantsFrequencyOutput, myVerbose)
+				step(12)
 
 		if myArgs.entropy:
 
@@ -129,14 +162,16 @@ try:
 				step(2)
 			elif (myArgs.sequencefile != None):
 				with open(myArgs.sequencefile, 'r') as f:
-					sequence = f.read();
+					sequence = f.read()
 				Scop3dWorker.doUniprotBlast(sequence, myUniprotOutput, myVerbose)
 				step(1)
 				Scop3dWorker.downloadUniprotSequences(None, myUniprotOutput, mySequencesOutput, myArgs.cutoff, myVerbose)
 				step(2)
-			else:
+			elif (myArgs.fastafile != None):
 				mySequencesOutput = myArgs.fastafile
 				step(2)
+			else :
+				exit('Please specify one of -f, -s or -u flags')
 
 			sequencesCount = Scop3dWorker.loadSequences(mySequencesOutput, myVerbose)
 			step(3)
@@ -194,10 +229,7 @@ try:
 		print('OK')
 		step(16)
 
-		if myArgs.variants:
-			mySequence = myUniprotSequenceOutput
-		else:
-			mySequence = myConsensusOutput
+		mySequence = myConsensusOutput
 		Scop3dWorker.doChainAlignments(pdbID, structure, mySequence, chainSequencesDir, myVerbose)
 		step(17)
 
@@ -210,8 +242,8 @@ try:
 			step(18)
 
 		with open(myChainsOutput, 'w', 0) as f:
-			f.write(pdbID + '\n');
-			f.write(','.join(adjustChains));
+			f.write(pdbID + '\n')
+			f.write(','.join(adjustChains))
 		step(19)
 
 		if myArgs.entropy:
@@ -241,7 +273,7 @@ try:
 			pdbData = Scop3dWorker.extractPDBdata(structure, adjustChains, snpType, myArgs.verbose)
 			with open(mySNPPDBTypeDataOutput, 'w') as f:
 				pdbDataJson = json.dumps(pdbData, indent=4, sort_keys=True)
-				f.write(pdbDataJson + "\n");
+				f.write(pdbDataJson + "\n")
 			step(22)
 
 except Exception as e:

@@ -7,6 +7,7 @@ import os
 import json
 import subprocess
 import tempfile
+import operator
 import urllib2
 from lxml import etree
 
@@ -15,6 +16,8 @@ from Bio import ExPASy
 from Bio import SeqIO
 from Bio import SeqUtils
 from Bio import SwissProt
+from Bio import Entrez
+from Bio import Seq
 
 from Bio.Align.AlignInfo import SummaryInfo
 from Bio.Alphabet import IUPAC
@@ -26,13 +29,13 @@ from Bio.PDB import Select
 from Bio.PDB import Residue
 from Bio.PDB import Atom
 from Bio.PDB.Polypeptide import PPBuilder
-from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from weblogolib import *
 
 ### Stage 1
 
 myNoDataValue = 110
+Entrez.email = "bits@vib.be"
 
 # 0. Creating workdirs
 def mkdirs(outputDir, verbose):
@@ -67,7 +70,7 @@ def downloadUniprotSequences(uniprotID, blastFile, sequencesFile, cutoff, verbos
 				title = alignment.title
 				words = title.split('|')
 				seqID = words[3]
-				identityPercent = 100.0 * float(hsp.identities) / float(alignment.length)
+				identityPercent = 100.0 * float(hsp.identities) / float(hsp.align_length)
 				if (identityPercent >= float(cutoff)):
 					try:
 						sequence = urllib2.urlopen('http://www.uniprot.org/uniprot/' + seqID + '.fasta')
@@ -79,6 +82,39 @@ def downloadUniprotSequences(uniprotID, blastFile, sequencesFile, cutoff, verbos
 				else:
 					if verbose:
 						print(seqID + " (identity " + str(identityPercent) + "% < cutoff " + str(cutoff) + "%) - skipping")
+	print('OK')
+
+def downloadNCBISequences(blastFile, sequencesFile, cutoff, verbose):
+	print('Obtaining sequences from NCBI...')
+	with open(blastFile, 'r') as f:
+		records = NCBIXML.read(f)
+	if verbose:
+		print('Found ' + str(len(records.alignments)) + ' matches')
+	with open(sequencesFile, 'w') as f:
+		sequences = []
+		for idx, alignment in enumerate(records.alignments):
+			for hsp in alignment.hsps:
+				title = alignment.title
+				words = title.split('|')
+				seqID = words[3]
+				identityPercent = 100.0 * float(hsp.identities) / float(hsp.align_length)
+				if (identityPercent >= float(cutoff)):
+					sequences.append(seqID);
+					if verbose:
+						print(seqID + " (identity " + str(identityPercent) + "% >= cutoff " + str(cutoff) + "%) - adding")
+				else:
+					if verbose:
+						print(seqID + " (identity " + str(identityPercent) + "% < cutoff " + str(cutoff) + "%) - skipping")
+		try:
+			handle = Entrez.efetch(db="nuccore", id=",".join(sequences), rettype="fasta", retmode="xml")
+			records = Entrez.parse(handle)
+			DNAsequences = []
+			for record in records:
+				DNAsequences.append( SeqRecord( Seq.Seq(record['TSeq_sequence'], IUPAC.unambiguous_dna ), id=record['TSeq_accver'], description=record['TSeq_defline']) )
+			SeqIO.write(DNAsequences, f, "fasta")
+			handle.close()
+		except Exception as e:
+			print("WARNING: unable to download this entry: " + str(e))
 	print('OK')
 
 def loadSequences(sequencesFile, verbose):
@@ -171,11 +207,28 @@ def calcConsensus(alignmentFile, consensusFile, verbose):
 	print("Calculating of the consensus sequence...")
 	if verbose:
 		print('Writing sequence to: ' + consensusFile)
-	subprocess.check_call(['cons', '-sequence', alignmentFile, '-plurality', '1', '-identity', '0', '-auto', '-outseq', consensusFile, '-name', 'consensus'])
+	subprocess.check_call(['cons', '-sequence', alignmentFile, '-plurality', '1', '-identity', '0', '-setcase', '2.9', '-auto', '-outseq', consensusFile, '-name', 'consensus'])
 	if verbose:
 		consensusSeq = SeqIO.read(consensusFile, 'fasta')
 		print('Consensus sequence: ')
 		print(consensusSeq.seq)
+	print('OK')
+
+def translateSequences(consensusFile, translatedFile, verbose):
+	print("Translating the sequence(s)...")
+	sequences = SeqIO.parse(consensusFile, 'fasta')
+	translatedSequences = []
+	for seq in sequences:
+		if verbose:
+			print('> sequence: ')
+			print(seq.seq)
+		translation = Seq.translate(seq.seq)
+		if verbose:
+			print('> translation: ')
+			print(translation)
+		translatedSequences.append(SeqRecord( translation, id=seq.id, description=seq.description ))
+	with open(translatedFile, "w") as f:
+		SeqIO.write(translatedSequences, f, "fasta")
 	print('OK')
 
 # 7. Calculation of the abundance matrices - biopython module
@@ -280,6 +333,14 @@ def drawWeblogo(alignmentFile, logoFile, verbose):
 def doUniprotBlast(uniprotid, blastFile, verbose):
 	print('Performing BLAST with the UniProt ID ' + uniprotid + '...')
 	results = NCBIWWW.qblast('blastp', 'swissprot', uniprotid)
+	with open(blastFile, 'w') as f:
+		f.write(results.read())
+	results.close()
+	print('OK')
+
+def doNCBIBlast(sequence, blastFile, verbose):
+	print('Performing NCBI with the DNA sequence ' + sequence + '...')
+	results = NCBIWWW.qblast('blastn', 'nr', sequence)
 	with open(blastFile, 'w') as f:
 		f.write(results.read())
 	results.close()
@@ -551,7 +612,7 @@ def getUniprotRecord(uniprotID, recordFile, sequenceFile):
 		if o['type'] == 'scientific':
 			organismName = o['value']
 			break
-	record = SeqRecord( Seq(protein['sequence']['sequence'], IUPAC.protein), id=protein['accession'], name=protein['id'], description=protein['id'])
+	record = SeqRecord( Seq.Seq(protein['sequence']['sequence'], IUPAC.protein), id=protein['accession'], name=protein['id'], description=protein['id'])
 	with open(sequenceFile, "w") as f:
 		SeqIO.write([record], f, "fasta")
 	print('OK')
@@ -635,6 +696,86 @@ def getEnsemblVariants(organismName, ensemblID, variantsFile, verbose):
 		variants[position].append(variant)
 	print('OK')
 	return variants
+
+def getSnpSites(alignmentFile, fastaFile, vcfFile, verbose):
+	dnaRecs = [f for f in SeqIO.parse(alignmentFile, 'clustal')]
+	with open(fastaFile, "w") as f:
+		SeqIO.write(dnaRecs, f, "fasta")
+	params = ['snp-sites', '-rv', '-o', vcfFile, fastaFile]
+	subprocess.check_call(params)
+	
+
+def callVariants(dnaSeqenceFile, protAlignmentFile, protConsSeqFile, outputFile, verbose):
+	# load the proteins alignment
+	protAlnRecs = [f for f in SeqIO.parse(protAlignmentFile, 'clustal')]
+	strain_protAlnSeq = {rec.id:''.join([nt for nt in rec.seq]) for rec in protAlnRecs}
+	
+	# load raw dna sequences
+	dnaRecs = [f for f in SeqIO.parse(dnaSeqenceFile, 'fasta')]
+	strain_dnaSeq = {rec.id:''.join([nt for nt in rec.seq]) for rec in dnaRecs}
+
+	# load protein consensus seq
+	consensusProtSeq = SeqIO.read(protConsSeqFile, 'fasta')
+
+	strainProtIdx = {rec.id:0 for rec in dnaRecs}
+	strains = [rec.id for rec in dnaRecs]
+	snps = {rec.id:{} for rec in dnaRecs}
+	
+	seq_len = 0
+	for s in strain_protAlnSeq:
+		seq_len = len(strain_protAlnSeq[s])
+	
+	with open(outputFile, 'w') as f:
+		writer = csv.writer(f, dialect='excel-tab')
+		writer.writerow(['residue','freq','variants', 'type', 'ids'])
+		
+		# superimpose  protein alignment with nucleotide sequences and calculate snps
+		for i in range(0, seq_len):
+			cdns = {}
+			freq = 0
+			variants = []
+			types = []
+			ids = []
+			counts = [{'A':0, 'T':0, 'C': 0, 'G': 0}, {'A':0, 'T':0, 'C': 0, 'G': 0}, {'A':0, 'T':0, 'C': 0, 'G': 0}]
+			consAA = consensusProtSeq.seq[i]
+			for strain in strains:
+				aa = strain_protAlnSeq[strain][i]
+				if (aa != '-'):
+					idx = strainProtIdx[strain]
+					cdn = strain_dnaSeq[strain][idx*3 : (idx+1)*3]
+					counts[0][cdn[0]]+=1
+					counts[1][cdn[1]]+=1
+					counts[2][cdn[2]]+=1
+					cdns[strain] = cdn
+			consCdn = "".join([max(counts[0].iteritems(), key=operator.itemgetter(1))[0], max(counts[1].iteritems(), key=operator.itemgetter(1))[0], max(counts[2].iteritems(), key=operator.itemgetter(1))[0]])
+			consCdnAA = Seq.Seq(consCdn, IUPAC.unambiguous_dna).translate()
+			for strain in strains:
+				aa = strain_protAlnSeq[strain][i].upper()
+				if (aa != '-'):
+					idx = strainProtIdx[strain]
+					cdn = strain_dnaSeq[strain][idx*3 : (idx+1)*3]
+					if aa != consAA.upper() or cdn[0] != consCdn[0] or cdn[1] != consCdn[1] or cdn[2] != consCdn[2]:
+						freq+=1
+						variants.append(aa)
+						if aa == consAA.upper():
+							types.append('synonymous_variant')
+						else:
+							types.append('missense_variant')
+						ids.append(strain)
+						#if verbose:
+						#	print str(i) + " " + consAA + "->" + aa  + " : " + strain + " " + str(idx) + " " + consCdn + " -> " + cdn + "(" + consCdnAA + "->" + aa + ")"
+					strainProtIdx[strain]+=1
+			if freq > 0:
+				variants = ",".join(variants)
+				types = ",".join(types)
+				ids = ",".join(ids)
+			else:
+				variants = "-"
+				types = "-"
+				ids = "-"
+			if verbose:
+				print("Position: " + str(i) + " residue: " + consAA + " frequency: " + str(freq) + " variants: " + variants + " type: " + types)
+			writer.writerow([consAA, freq, variants, types, ids])
 
 def calcFrequencyType(features, sequenceFile, outputFile, verbose):
 	print("Calculating SNP frequency...")
