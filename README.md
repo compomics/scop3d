@@ -34,6 +34,8 @@ For conservation analysis in the first PDB-file, the B-values are replaced by th
 
 For SNP variants analysis in the first PDB-file, the B-values are replaced by the SNP frequency at that position. In the second PDB-file, the B-values are replaced by the SNP type.
 
+![Flow diagram of Scop3D](Scop3d.png "Flow diagram of Scop3D")
+
 ### Citation
  * [Vermeire and Vermaere et al.: Proteomics. 2015 Apr;15(8):1448-52.](http://www.ncbi.nlm.nih.gov/pubmed/25641949)
  * If you use scop3D as part of a paper, please include the reference above.
