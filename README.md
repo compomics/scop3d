@@ -15,14 +15,16 @@ Scop3D (Sequence Conservation On Protein 3D structure) allows the visualization 
 Scop3D is composed of two parts. The first part focuses on the analysis of sequence conservation or SNP variants, while the second part involves structural annotation. There is also an intermediate blast step available.
 
 **New in version 3:** 
-* added analysis of sequence SNP variants
+* added analysis of sequence SNP variants based on Uniprot ID, or DNA sequence(s)
 * refreshed command line interface
 
 ### Sequence analysis
 
+**Sequence conservation analysis:**
 The starting point for the sequence conservation analysis is a FASTA-file which contains all sequence variants of interest. It is also possible to download sequence variants using UniprotID - the sequence will be blasted and cutoff value applied. These variants are aligned with MUSCLE. From the resulting multiple sequence alignment, the consensus sequence is constructed by retaining the most frequently found residue across all variant sequences for each position. This residue should be found more than the conservation threshold which is set be the user. Two matrices are created. The first matrix annotates the consensus sequence with the absolute abundance of each amino acid per position. In the second matrix, these numbers are converted into relative abundances in percent. Finally, a sequence logo is created with WebLogo.
 
-The SNP variants analysis is based on Ensembl and Uniprot data, and therefore UniprotID is needed. The varians data is downloaded from the Uniprot database as well as Ensembl database. Using this info a matrix is created, annotating the protein sequence with the frequency, variants and type. Based on that the sequence is coloured accordingly.
+**Sequence SNP variants analysis:**
+The SNP variants analysis is based either on Uniprot and Ensembl data or on DNA sequence(s). In the first case the variant data is downloaded from the Uniprot and Ensembl databases using UniprotID. In the second case user-supplied fasta file with multiple sequences is used or, if using single DNA sequence, sequence is BLASTed against NCBI database with identity cutoff to obtain multiple sequences to be analyzed. Sequences are then aligned and compared to spot SNPs, as well as translated and aligned to obtain consensus protein sequence. In both cases using gathered info a matrix is created, annotating the protein sequence with the frequency, variants and type of variant. Based on that, the sequence is coloured accordingly. 
 
 ### Structure annotation
 
@@ -40,33 +42,56 @@ For SNP variants analysis in the first PDB-file, the B-values are replaced by th
 
 ## Usage
 
-Couple of typical flows are shown below:
+Scop3D is available either as web tool or as standalone command line tool.
 
-### Sequence conservation analysis
+### Web interface
+
+Fully functional web interface is available under [http://example.com](TBD)
+
+### Command line
+
+Couple of typical flows are shown below. All files are read and written to `~/outputdir`. You can run `./scop3d -h` to see all available options.
+
+**Sequence conservation analysis**
 
 ```
+Analyze the sequence entropy and conservation for protein sequences from sequences.fasta:
 # ./scop3d sequence -ent -w ~/outputdir -f sequences.fasta
+Amongst result files in the outputdir, a consensus.fasta is created, that can be used as a BLAST input:
 # ./scop3d blast ~/outputdir/consensus.fasta
+After you analyze the blast output, you can choose the PDB ID, on which you want the consensus sequence entropy and conservation superimposed, e.g. 4F15:
 # ./scop3d structure -ent -w ~/outputdir -i 4F15
 ```
 
 ```
+Analyze the sequence entropy and conservation for protein A8K2U0 from Uniprot with 50% identity cutoff:
 # ./scop3d sequence -ent -w ~/outputdir -u A8K2U0 -t 50
+Superimpose sequence entropy and conservation on PDB from file 4F15.pdb using only chains A and C:
 # ./scop3d structure -ent -w ~/outputdir -f 4F15.pdb -c A,C
 ```
 
-### Sequence conservation analysis
+**Sequence SNP variants analysis**
 
 ```
+Analyze the SNPs for protein P06858 from Uniprot:
 # ./scop3d sequence -var -w ~/outputdir -u P06858
 # ./scop3d blast ~/outputdir/uniprot.fasta
 # ./scop3d structure -var -w ~/outputdir -i 4ACQ
 ```
 
 ```
-# ./scop3d sequence -var -w ~/outputdir -u A8K2U0
+Analyze the SNPs for DNA sequences from sequences.fasta:
+# ./scop3d sequence -var -w ~/outputdir -f sequences.fasta
+# ./scop3d blast ~/outputdir/uniprot.fasta
+# ./scop3d structure -var -w ~/outputdir -i 4ACQ
+```
+
+```
+Analyze the SNPs for DNA sequence from dnasequence.fasta with 70% identity cutoff:
+# ./scop3d sequence -var -w ~/outputdir -s dnasequence.fasta -t 70
 # ./scop3d structure -var -w ~/outputdir -f 4F15.pdb
 ```
+
 
 ### Remarks
 
@@ -89,7 +114,7 @@ Please use -w to bundle all output/input files in one directory. The subsequent 
 
 ## Previous version
 
-The documentation for previous version of the tool (including binaries for windows, linux, mac) can be found under [https://github.com/compomics/scop3d](https://github.com/compomics/scop3d)
+The documentation for previous version of the tool (including binaries for windows, linux, mac) can be found in  [https://github.com/vibbits/scop3d/tree/master/scop3D.v2](scop3D.v2) directory
 
 ----
 
