@@ -1,6 +1,23 @@
 #!/usr/bin/env python
 
-''' Scop3D 3.0 - Sequence Conservation On Protein 3D structure '''
+""" 
+	Scop3D 3.0 - Sequence Conservation On Protein 3D structure 
+	Copyright 2018 Lukasz Kreft <lukasz.kreft@vib.be>
+"""
+"""
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+"""
 
 import argparse
 import os
@@ -11,7 +28,7 @@ import json
 from Bio.PDB import PDBParser
 from Bio.PDB import PDBIO
 
-from Scop3dWorker import Scop3dWorker
+from Scop3dWorker import worker as Scop3dWorker
 
 __author__ = 'Elien Vandermarliere, Lukasz Kreft'
 __copyright__ = 'Copyright 2017, VIB'

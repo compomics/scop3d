@@ -48,7 +48,7 @@ Scop3D is available either as web tool or as standalone command line tool.
 
 ### Web interface
 
-Fully functional web interface is available under [http://example.com](TBD)
+Fully functional web interface is available under [TBD](http://example.com)
 
 ### Command line
 
@@ -121,7 +121,7 @@ Please use -w to bundle all output/input files in one directory. The subsequent 
 
 ## Previous version
 
-The documentation for previous version of the tool (including binaries for windows, linux, mac) can be found in  [https://github.com/vibbits/scop3d/tree/master/scop3D.v2](scop3D.v2) directory
+The documentation for previous version of the tool (including binaries for windows, linux, mac) can be found in  [scop3D.v2](scop3D.v2) directory
 
 ----
 

@@ -1,5 +1,23 @@
+""" 
+	Scop3D Worker - worker module for Scop3D 
+	Copyright 2018 Lukasz Kreft <lukasz.kreft@vib.be>
+"""
+"""
+ 	This file is part of Scop3D.
 
-""" Scop3D Worker - worker module for Scop3d """
+    Scop3D is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Scop3D is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Scop3D. If not, see <http://www.gnu.org/licenses/>.
+"""
 
 import csv
 import math
@@ -645,7 +663,7 @@ def getUniprotVariants(uniprotID, variantsFile, verbose):
 def getEnsemblVariants(organismName, ensemblID, variantsFile, verbose):
 	print("Getting variants data from EnsemblID " + ensemblID)
 	with open(variantsFile, 'w') as f:
-		subprocess.check_call(['perl', os.path.dirname(os.path.abspath(__file__)) + '/../ensembl.pl', organismName, ensemblID], stdout=f)
+		subprocess.check_call(['perl', os.path.dirname(os.path.abspath(__file__)) + '/../EnsemblWorker/ensembl.pl', organismName, ensemblID], stdout=f)
 	variants = {}
 	with open(variantsFile, 'r') as f:
 		features = f.readlines()
