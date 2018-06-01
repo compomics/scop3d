@@ -663,7 +663,7 @@ def getUniprotVariants(uniprotID, variantsFile, verbose):
 def getEnsemblVariants(organismName, ensemblID, variantsFile, verbose):
 	print("Getting variants data from EnsemblID " + ensemblID)
 	with open(variantsFile, 'w') as f:
-		subprocess.check_call(['perl', os.path.dirname(os.path.abspath(__file__)) + '/../EnsemblWorker/ensembl.pl', organismName, ensemblID], stdout=f)
+		subprocess.check_call(['perl', os.path.dirname(os.path.abspath(__file__)) + '/../EnsemblWorker/worker.pl', organismName, ensemblID], stdout=f)
 	variants = {}
 	with open(variantsFile, 'r') as f:
 		features = f.readlines()
