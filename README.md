@@ -5,6 +5,7 @@
  * [System requirements](#system-requirements)
  * [Previous version](#previous-version)
  * [Project Support](#project-support)
+ * [License](#license)
 
 ----
 
@@ -133,5 +134,14 @@ The scop3D project is grateful for the support by:
 * [Compomics](http://www.compomics.com)
 * [VIB](http://www.vib.be)
 * [Ghent University](http://www.ugent.be)
+
+----
+
+## License
+This software is licensed under the [GNU General Public License v3](COPYING). 
+
+This documentation and related images are licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). 
+
+<img src="https://www.gnu.org/graphics/gplv3-127x51.png" height="30" /> &nbsp; <img src="https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc.png" height="30" />
 
 [Go to top of page](#scop3d-v3)
