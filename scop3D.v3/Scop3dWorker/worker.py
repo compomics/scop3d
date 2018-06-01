@@ -798,11 +798,11 @@ def calcFrequencyType(features, sequenceFile, outputFile, verbose):
 			if position in features:
 				freq = len(features[position])
 				for f in features[position]:
-					wildtype = "-";
-					if len(f['wildType']) > 1:
-						wildtype = f['wildType'][0];
-					if residue != wildtype:
-						print("WARNING: sequence does not match: residue " + residue + " feature " + repr(f))
+					#wildtype = "-";
+					#if len(f['wildType']) > 0:
+					#	wildtype = f['wildType'][0]
+					#if residue != wildtype:
+					#	print("WARNING: sequence does not match: residue " + residue + "<>" + wildtype + " feature " + repr(f))
 					change.append(f['alternativeSequence'])
 					snptype.append(f['consequence'])
 					fid = f['id']

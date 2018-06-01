@@ -54,7 +54,7 @@ foreach my $tv (@{$trvs}) {
     my $change = $tva->pep_allele_string;
 
     print
-      $tv->variation_feature->variation_name, "\t" ,
+      $tva->variation_feature->variation_name, "\t" ,
       $tva->variation_feature_seq, "\t",
       join(",", @ensembl_consequences), "\t",
       join(",", @so_consequences), "\t",
