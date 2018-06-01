@@ -50,7 +50,7 @@ Fully functional web interface is available under [http://example.com](TBD)
 
 ### Command line
 
-Couple of typical flows are shown below. All files are read and written to `~/outputdir`. You can run `./scop3d -h` to see all available options.
+Couple of typical flows are shown below. All files are read from and written to `~/outputdir`. You can run `./scop3d -h` to see all available options.
 
 **Sequence conservation analysis**
 
@@ -75,21 +75,26 @@ Superimpose sequence entropy and conservation on PDB from file 4F15.pdb using on
 ```
 Analyze the SNPs for protein P06858 from Uniprot:
 # ./scop3d sequence -var -w ~/outputdir -u P06858
-# ./scop3d blast ~/outputdir/uniprot.fasta
+Amongst result files in the outputdir, a consensus.fasta is created containing protein sequence, that can be used as a BLAST input:
+# ./scop3d blast ~/outputdir/consensus.fasta
+After you analyze the blast output, you can choose the PDB ID, on which you want the sequence SNPs frequency and type superimposed, e.g. 4ACQ:
 # ./scop3d structure -var -w ~/outputdir -i 4ACQ
 ```
 
 ```
 Analyze the SNPs for DNA sequences from sequences.fasta:
 # ./scop3d sequence -var -w ~/outputdir -f sequences.fasta
-# ./scop3d blast ~/outputdir/uniprot.fasta
+Amongst result files in the outputdir, a consensus.fasta is created containing protein sequence, that can be used as a BLAST input:
+# ./scop3d blast ~/outputdir/consensus.fasta
+After you analyze the blast output, you can choose the PDB ID, on which you want the sequence SNPs frequency and type superimposed, e.g. 4ACQ:
 # ./scop3d structure -var -w ~/outputdir -i 4ACQ
 ```
 
 ```
 Analyze the SNPs for DNA sequence from dnasequence.fasta with 70% identity cutoff:
 # ./scop3d sequence -var -w ~/outputdir -s dnasequence.fasta -t 70
-# ./scop3d structure -var -w ~/outputdir -f 4F15.pdb
+Superimpose sequence SNPs frequency and type on PDB from file 4F15.pdb using only chains A and C:
+# ./scop3d structure -var -w ~/outputdir -f 4F15.pdb -c A,C
 ```
 
 
