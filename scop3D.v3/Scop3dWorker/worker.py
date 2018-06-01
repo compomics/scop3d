@@ -420,7 +420,12 @@ def selectChains(pdbID, chainSequencesDir, verbose):
 				for line in f.readlines():
 					if line.startswith('# Identity:'):
 						words = line.split()
-						chainIdentity[chain] = float(words[3][1:-2])
+						try:
+							#for >=10
+							chainIdentity[chain] = float(words[3][1:-2])
+						except ValueError:
+							#for <10
+							chainIdentity[chain] = float(words[4][0:-2])
 	if verbose:
 		print('Chain identity values: ')
 	for chain, value in chainIdentity.items():
@@ -444,7 +449,7 @@ def getChainEntropyVariationData(pdbID, entropyFile, consensusVariationFile, cha
 	for chain in adjustChains:
 		if verbose:
 			print('Adjusting chain: ' + chain)
-		chain = chain.upper()
+		#chain = chain.upper()
 		entropyData[chain] = []
 		consevationData[chain] = []
 		alignmentOutput = os.path.join(chainSequencesDir, pdbID + '_' + chain + '.needle')
@@ -490,7 +495,7 @@ def getChainFrequencyTypeData(pdbID, frequencyTypeFile, chainSequencesDir, adjus
 	for chain in adjustChains:
 		if verbose:
 			print('Adjusting chain: ' + chain)
-		chain = chain.upper()
+		#chain = chain.upper()
 		frequencyData[chain] = []
 		typeData[chain] = []
 		alignmentOutput = os.path.join(chainSequencesDir, pdbID + '_' + chain + '.needle')
@@ -670,11 +675,14 @@ def getEnsemblVariants(organismName, ensemblID, variantsFile, verbose):
 	for feature in features:
 		feature = feature[:-1].split("\t")
 		if feature[1] == 'HGMD_MUTATION':
-			continue;
+			continue
 		try :
 			position = int(feature[4].split(' ')[0])
 		except ValueError:
-			position = int(feature[4].split(' ')[1])
+			try :
+				position = int(feature[4].split(' ')[1])
+			except ValueError:
+				continue
 		print('Adding feature at position '+ str(position) + ' : ' + repr(feature))
 		sequence = feature[5].split('/')
 		if len(sequence) == 2:
@@ -734,16 +742,16 @@ def callVariants(dnaSeqenceFile, protAlignmentFile, protConsSeqFile, outputFile,
 			variants = []
 			types = []
 			ids = []
-			counts = [{'A':0, 'T':0, 'C': 0, 'G': 0}, {'A':0, 'T':0, 'C': 0, 'G': 0}, {'A':0, 'T':0, 'C': 0, 'G': 0}]
+			counts = [{}, {}, {}]
 			consAA = consensusProtSeq.seq[i]
 			for strain in strains:
 				aa = strain_protAlnSeq[strain][i]
 				if (aa != '-'):
 					idx = strainProtIdx[strain]
 					cdn = strain_dnaSeq[strain][idx*3 : (idx+1)*3]
-					counts[0][cdn[0]]+=1
-					counts[1][cdn[1]]+=1
-					counts[2][cdn[2]]+=1
+					counts[0][cdn[0]] = counts[0].get(cdn[0], 0) + 1
+					counts[1][cdn[1]] = counts[1].get(cdn[1], 0) + 1
+					counts[2][cdn[2]] = counts[2].get(cdn[2], 0) + 1
 					cdns[strain] = cdn
 			consCdn = "".join([max(counts[0].iteritems(), key=operator.itemgetter(1))[0], max(counts[1].iteritems(), key=operator.itemgetter(1))[0], max(counts[2].iteritems(), key=operator.itemgetter(1))[0]])
 			consCdnAA = Seq.Seq(consCdn, IUPAC.unambiguous_dna).translate()
