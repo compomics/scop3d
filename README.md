@@ -1,9 +1,11 @@
-# Scop3D
+# Scop3D v3
 
  * [Project Description](#project-description)
- * [Downloads](#downloads)
  * [Usage](#usage)
+ * [System requirements](#system-requirements)
+ * [Previous version](#previous-version)
  * [Project Support](#project-support)
+ * [License](#license)
 
 ----
 
@@ -11,50 +13,116 @@
 
 Scop3D (Sequence Conservation On Protein 3D structure) allows the visualization of sequence variation of a protein on its structure.
 
-Scop3D is composed of two parts. The first part focuses on the analysis of sequence conservation, while the second part involves structural annotation.
+Scop3D is composed of two parts. The first part focuses on the analysis of sequence conservation or SNP variants, while the second part involves structural annotation. There is also an intermediate blast step available.
 
-A command line version is available as well.
+**New in version 3:** 
+* added analysis of sequence SNP variants based on Uniprot ID, or DNA sequence(s)
+* refreshed command line interface
 
 ### Sequence analysis
 
-The starting point for the sequence analysis is a FASTA-file which contains all sequence variants of interest. These variants are aligned with MUSCLE. From the resulting multiple sequence alignment, the consensus sequence is constructed by retaining the most frequently found residue across all variant sequences for each position. This residue should be found more than the conservation threshold which is set be the user. Two matrices are created. The first matrix annotates the consensus sequence with the absolute abundance of each amino acid per position. In the second matrix, these numbers are converted into relative abundances in percent. Finally, a sequence logo is created with WebLogo.
+**Sequence conservation analysis:**
+The starting point for the sequence conservation analysis is a FASTA-file which contains all sequence variants of interest. It is also possible to download sequence variants using UniprotID - the sequence will be blasted and cutoff value applied. These variants are aligned with MUSCLE. From the resulting multiple sequence alignment, the consensus sequence is constructed by retaining the most frequently found residue across all variant sequences for each position. This residue should be found more than the conservation threshold which is set be the user. Two matrices are created. The first matrix annotates the consensus sequence with the absolute abundance of each amino acid per position. In the second matrix, these numbers are converted into relative abundances in percent. Finally, a sequence logo is created with WebLogo.
+
+**Sequence SNP variants analysis:**
+The SNP variants analysis is based either on Uniprot and Ensembl data or on DNA sequence(s). In the first case the variant data is downloaded from the Uniprot and Ensembl databases using UniprotID. In the second case user-supplied fasta file with multiple sequences is used or, if using single DNA sequence, sequence is BLASTed against NCBI database with identity cutoff to obtain multiple sequences to be analyzed. Sequences are then aligned and compared to spot SNPs, as well as translated and aligned to obtain consensus protein sequence. In both cases using gathered info a matrix is created, annotating the protein sequence with the frequency, variants and type of variant. Based on that, the sequence is coloured accordingly. 
 
 ### Structure annotation
 
-In this part, a PDB-file is needed. This file can be obtained from the PDB or an own PDB-file can be used. If no protein structure is at hand, scop3D provides the option to retrieve a homologous structure by performing a BLAST search of the consensus sequence against the PDB. The outcome of the structure annotation is two PDB-files with altered B-values and a set of figures. In the first PDB-file, the B-values are replaced by the percent variation (defined as one hundred minus the percentage conservation) at that position. In the second PDB-file, the B-values are replaced by the entropy factor.
+In this part, a PDB-file is needed. This file can be obtained from the PDB or an own PDB-file can be used. If no protein structure is at hand, scop3D provides the option to retrieve a homologous structure by performing a BLAST search of the consensus sequence against the PDB. The outcome of the structure annotation is two PDB-files with altered B-values and a set of figures. The output depends wheater the sequence conservation or SNP variants analysis was performed as the first step.
+
+For conservation analysis in the first PDB-file, the B-values are replaced by the percent variation (defined as one hundred minus the percentage conservation) at that position. In the second PDB-file, the B-values are replaced by the entropy factor.
+
+For SNP variants analysis in the first PDB-file, the B-values are replaced by the SNP frequency at that position. In the second PDB-file, the B-values are replaced by the SNP type.
+
+![Flow diagram of Scop3D](Scop3d.png "Flow diagram of Scop3D")
 
 ### Citation
  * [Vermeire and Vermaere et al.: Proteomics. 2015 Apr;15(8):1448-52.](http://www.ncbi.nlm.nih.gov/pubmed/25641949)
  * If you use scop3D as part of a paper, please include the reference above.
 
-[Go to top of page](#scop3d)
-
-----
-
-## Downloads
-
-  * [Scop3D for windows](http://genesis.ugent.be/uvpublicdata/scop3D-Windows-Version.zip)
-  * [Scop3D for mac](http://genesis.ugent.be/uvpublicdata/scop3D-Mac-Version.zip)
-  * [Scop3D for linux](http://genesis.ugent.be/uvpublicdata/scop3D-Linux-Version.tar.gz)
-  * [Scop3D command line version](https://github.com/compomics/scop3d/blob/master/scop3D/command_line.py)
-
-[Go to top of page](#scop3d)
-
 ----
 
 ## Usage
-See the [wiki](https://github.com/compomics/scop3d/wiki) for additional information on how to use scop3D for both the graphical user interface and command line versions.
 
-### System requirements
-The requirements for the graphical user interface and command line version are currently different, as decribed in the [wiki](https://github.com/compomics/scop3d/wiki).
+Scop3D is available either as web tool or as standalone command line tool.
+
+### Web interface
+
+Fully functional web interface is available under [TBD](http://example.com)
+
+### Command line
+
+Couple of typical flows are shown below. All files are read from and written to `~/outputdir`. You can run `./scop3d -h` to see all available options.
+
+**Sequence conservation analysis**
+
+```
+Analyze the sequence entropy and conservation for protein sequences from sequences.fasta:
+# ./scop3d sequence -ent -w ~/outputdir -f sequences.fasta
+Amongst result files in the outputdir, a consensus.fasta is created, that can be used as a BLAST input:
+# ./scop3d blast ~/outputdir/consensus.fasta
+After you analyze the blast output, you can choose the PDB ID, on which you want the consensus sequence entropy and conservation superimposed, e.g. 4F15:
+# ./scop3d structure -ent -w ~/outputdir -i 4F15
+```
+
+```
+Analyze the sequence entropy and conservation for protein A8K2U0 from Uniprot with 50% identity cutoff:
+# ./scop3d sequence -ent -w ~/outputdir -u A8K2U0 -t 50
+Superimpose sequence entropy and conservation on PDB from file 4F15.pdb using only chains A and C:
+# ./scop3d structure -ent -w ~/outputdir -f 4F15.pdb -c A,C
+```
+
+**Sequence SNP variants analysis**
+
+```
+Analyze the SNPs for protein P06858 from Uniprot:
+# ./scop3d sequence -var -w ~/outputdir -u P06858
+Amongst result files in the outputdir, a consensus.fasta is created containing protein sequence, that can be used as a BLAST input:
+# ./scop3d blast ~/outputdir/consensus.fasta
+After you analyze the blast output, you can choose the PDB ID, on which you want the sequence SNPs frequency and type superimposed, e.g. 4ACQ:
+# ./scop3d structure -var -w ~/outputdir -i 4ACQ
+```
+
+```
+Analyze the SNPs for DNA sequences from sequences.fasta:
+# ./scop3d sequence -var -w ~/outputdir -f sequences.fasta
+Amongst result files in the outputdir, a consensus.fasta is created containing protein sequence, that can be used as a BLAST input:
+# ./scop3d blast ~/outputdir/consensus.fasta
+After you analyze the blast output, you can choose the PDB ID, on which you want the sequence SNPs frequency and type superimposed, e.g. 4ACQ:
+# ./scop3d structure -var -w ~/outputdir -i 4ACQ
+```
+
+```
+Analyze the SNPs for DNA sequence from dnasequence.fasta with 70% identity cutoff:
+# ./scop3d sequence -var -w ~/outputdir -s dnasequence.fasta -t 70
+Superimpose sequence SNPs frequency and type on PDB from file 4F15.pdb using only chains A and C:
+# ./scop3d structure -var -w ~/outputdir -f 4F15.pdb -c A,C
+```
+
 
 ### Remarks
-!!! the use of the space character in file names or directory names should be avoided !!!
-!!! scop3D does not function when irregular characters are used !!!
 
-When large structures are being analysed, it is possible that only part of the structure is visualized. We therefore implemented the 'see ccp4mg' button in the image pages. This button allows you to start ccp4mg with your structure loaded. This then allows you to center the structure as you wish or to change the representation of the structure.
+Please use -w to bundle all output/input files in one directory. The subsequent runs will search for input files in this directory.
 
-[Go to top of page](#scop3d)
+----
+
+## System requirements
+
+* Python >= 2.7
+* Perl >= 5
+* Biopython
+* Bioperl
+* Ensembl Perl API
+* Weblogo
+* Muscle
+* Emboss
+
+----
+
+## Previous version
+
+The documentation for previous version of the tool (including binaries for windows, linux, mac) can be found in  [scop3D.v2](scop3D.v2) directory
 
 ----
 
@@ -62,14 +130,18 @@ When large structures are being analysed, it is possible that only part of the s
 
 The scop3D project is grateful for the support by:
 
-| Compomics | VIB | Ghent University|
-|:--:|:--:|:--:|
-| [![compomics](http://genesis.ugent.be/public_data/image/compomics.png)](http://www.compomics.com) | [![vib](http://genesis.ugent.be/public_data/image/vib.png)](http://www.vib.be) | [![ugent](http://genesis.ugent.be/public_data/image/ugent.png)](http://www.ugent.be/en) |
-
-[Go to top of page](#scop3d)
+* [VIB Bioinformatics Core](http://www.bits.vib.be)
+* [Compomics](http://www.compomics.com)
+* [VIB](http://www.vib.be)
+* [Ghent University](http://www.ugent.be)
 
 ----
 
-[![pycharm](https://www.jetbrains.com/pycharm/docs/logo_pycharm.png)](https://www.jetbrains.com/pycharm/)
+## License
+This software is licensed under the [GNU General Public License v3](COPYING). 
 
-[Go to top of page](#scop3d)
+This documentation and related images are licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). 
+
+<img src="https://www.gnu.org/graphics/gplv3-127x51.png" height="30" /> &nbsp; <img src="https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc.png" height="30" />
+
+[Go to top of page](#scop3d-v3)

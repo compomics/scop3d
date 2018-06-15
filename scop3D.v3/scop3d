@@ -1,0 +1,302 @@
+#!/usr/bin/env python
+
+""" 
+	Scop3D 3.0 - Sequence Conservation On Protein 3D structure 
+	Copyright 2018 Lukasz Kreft <lukasz.kreft@vib.be>
+"""
+"""
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+"""
+
+import argparse
+import os
+import shutil
+import sys, traceback
+import json
+
+from Bio.PDB import PDBParser
+from Bio.PDB import PDBIO
+
+from Scop3dWorker import worker as Scop3dWorker
+
+__author__ = 'Elien Vandermarliere, Lukasz Kreft'
+__copyright__ = 'Copyright 2017, VIB'
+__credits__ = ['Elien Vandermarliere', 'Lukasz Kreft', 'Niels Hulstaert', 'Davy Maddelein']
+__license__ = 'GPL'
+__version__ = '3.0'
+__maintainer__ = 'Elien Vandermarliere'
+__email__ = 'elien.vandermarliere@vib.be'
+__status__ = 'Development'
+
+parser = argparse.ArgumentParser(description='Sequence Conservation On Protein 3D structure')
+
+subparsers = parser.add_subparsers(help='available commands', dest='action')
+
+parserBlast = subparsers.add_parser('blast', help='perform BLAST on consensus sequence to find suitable PDB structure')
+parserBlast.add_argument('-v', '--verbose', action='store_true', help='print processing info on console')
+parserBlast.add_argument('-w', '--workdir', metavar='directory', default='.', help='working directory')
+parserBlast.add_argument('fastafile', help='fasta file with consensus sequence to be blasted')
+
+parserSequence = subparsers.add_parser('sequence', help='perform sequence analysis on sequences')
+parserSequence.add_argument('-v', '--verbose', action='store_true', help='print processing info on console')
+parserSequence.add_argument('-w', '--workdir', metavar='directory', default='.', help='working directory')
+group = parserSequence.add_mutually_exclusive_group(required=True)
+group.add_argument('-ent', '--entropy', action='store_true', help='analyse sequence entropy (score accordingly to conservation and entropy)')
+group.add_argument('-var', '--variants', action='store_true', help='analyse sequence variants (score accordingly to SNP frequency and type)')
+group = parserSequence.add_mutually_exclusive_group(required=True)
+group.add_argument('-f', '--fastafile', help='fasta file with multiple sequences to be analyzed')
+group.add_argument('-u', '--uniprotid', help='uniprot id of protein to be analyzed')
+group.add_argument('-s', '--sequencefile', help='fasta file containing single sequence to be analyzed')
+parserSequence.add_argument('-t', '--cutoff', metavar='value', default=60.0, type=float, help='identity cutoff for selecting sequences after blast, default 90 (works with -u, -s)')
+
+parserStructure = subparsers.add_parser('structure', help='superimpose sequence analysis results on PDB structure')
+parserStructure.add_argument('-v', '--verbose', action='store_true', help='print processing info on console')
+parserStructure.add_argument('-w', '--workdir', metavar='directory', default='.', help='working directory')
+parserStructure.add_argument('-c', '--chain', metavar='A,B,D', help='chain(s) to be adjusted')
+group = parserStructure.add_mutually_exclusive_group(required=True)
+group.add_argument('-ent', '--entropy', action='store_true', help='analyse sequence entropy (score accordingly to conservation and entropy)')
+group.add_argument('-var', '--variants', action='store_true', help='analyse sequence variants (score accordingly to SNP frequency and type)')
+group = parserStructure.add_mutually_exclusive_group(required=True)
+group.add_argument('-f', '--pdbfile', help='pdb file with protein structure')
+group.add_argument('-i', '--pdbid', help='pdb id of protein structure to be used')
+
+myArgs 						= parser.parse_args()
+myWorkdir					= myArgs.workdir
+myPidOutput 				= os.path.join(myWorkdir, 'scop3d.pid')
+mySequencesOutput 			= os.path.join(myWorkdir, 'sequences.fasta')
+myTranslatedSeqOutput 		= os.path.join(myWorkdir, 'seqprot.fasta')
+myVCFOutput	                = os.path.join(myWorkdir, 'snps.vcf')
+myConsensusOutput 			= os.path.join(myWorkdir, 'consensus.fasta')
+myTranslatedConsOutput		= os.path.join(myWorkdir, 'transcons.fasta')
+myProtConsOutput			= os.path.join(myWorkdir, 'consprot.fasta')
+myUniprotSequenceOutput		= os.path.join(myWorkdir, 'uniprot.fasta')
+myAbundanceOutput 			= os.path.join(myWorkdir, 'abundance_matrix.txt')
+myAbundancePercentOutput 	= os.path.join(myWorkdir, 'abundance_percentage_matrix.txt')
+myEntropyOutput 			= os.path.join(myWorkdir, 'consensus_entropy.txt')
+myVariationOutput 			= os.path.join(myWorkdir, 'consensus_abundance_variation.txt')
+myLogoOutput 				= os.path.join(myWorkdir, 'logo.png')
+myUniprotOutput 			= os.path.join(myWorkdir, 'uniprot_results.xml')
+myNCBIOutput	 			= os.path.join(myWorkdir, 'ncbi_results.xml')
+myBlastOutput 				= os.path.join(myWorkdir, 'blast_results.xml')
+myBlastSummaryOutput 		= os.path.join(myWorkdir, 'blast_summary.txt')
+myChainsOutput			 	= os.path.join(myWorkdir, 'chains.out')
+myAlignmentOutput 			= os.path.join(myWorkdir, 'msa.clustalw')
+myFastaAlignmentOutput		= os.path.join(myWorkdir, 'msa.fasta')
+myTranslatedAlnOutput		= os.path.join(myWorkdir, 'msaprot.clustalw')
+myAligmentStatsOutput 		= os.path.join(myWorkdir, 'pairwise_stats.txt')
+myProgressOutput			= os.path.join(myWorkdir, 'progress.txt')
+myEntropyPDBOutput			= os.path.join(myWorkdir, 'pdb_entropy.ent')
+myConservationPDBOutput		= os.path.join(myWorkdir, 'pdb_conservation.ent')
+myFrequencyPDBOutput		= os.path.join(myWorkdir, 'pdb_frequency.ent')
+myTypePDBOutput				= os.path.join(myWorkdir, 'pdb_type.ent')
+myUniprotVariantsOutput		= os.path.join(myWorkdir, 'uniprot_variants.json')
+myUniprotRecordOutput		= os.path.join(myWorkdir, 'uniprot_record.json')
+myEnsemblVariantsOutput		= os.path.join(myWorkdir, 'ensembl_variants.txt')
+myVariantsFrequencyOutput	= os.path.join(myWorkdir, 'variants_frequency_type.txt')
+mySNPPDBTypeDataOutput		= os.path.join(myWorkdir, 'snp_pdb_type.json')
+myVerbose					= myArgs.verbose
+myAction 					= myArgs.action
+
+
+def step(progress):
+	with open(myProgressOutput, 'w', 0) as f:
+		f.write(str(progress))
+
+try:
+	(sequencesDir, alignmentsDir, chainSequencesDir) = Scop3dWorker.mkdirs(myWorkdir, myVerbose)
+	with open(myPidOutput, 'w', 0) as f:
+		f.write(str(os.getpid()))
+
+	if myAction == 'sequence':
+
+		if myArgs.variants:
+
+			if myArgs.uniprotid != None:
+				myArgs.uniprotid = myArgs.uniprotid.upper()
+				(ensemblID, organism) = Scop3dWorker.getUniprotRecord(myArgs.uniprotid, myUniprotRecordOutput, myConsensusOutput)
+				step(8)
+				ensemblVariants = Scop3dWorker.getEnsemblVariants(organism, ensemblID, myEnsemblVariantsOutput, myVerbose)
+				step(9)
+				(uniprotVariants, xrefIndex) = Scop3dWorker.getUniprotVariants(myArgs.uniprotid, myUniprotVariantsOutput, myVerbose)
+				step(10)
+				for position, variants in ensemblVariants.iteritems():
+					skip = False
+					for variant in variants:
+						if variant['id'] not in xrefIndex:
+							if position not in uniprotVariants:
+								uniprotVariants[position] = []
+							uniprotVariants[position].append(variant)
+				step(11)
+
+				Scop3dWorker.calcFrequencyType(uniprotVariants, myConsensusOutput, myVariantsFrequencyOutput, myVerbose)
+				step(12)
+			else: 
+				if myArgs.sequencefile != None:
+					with open(myArgs.sequencefile, 'r') as f:
+						sequence = f.read()
+					Scop3dWorker.doNCBIBlast(sequence, myNCBIOutput, myVerbose)
+					step(1)
+					Scop3dWorker.downloadNCBISequences(myNCBIOutput, mySequencesOutput, myArgs.cutoff, myVerbose)
+					step(2)
+				elif myArgs.fastafile != None:
+					mySequencesOutput = myArgs.fastafile
+					step(2)
+				else:
+					exit('Please specify one of -f, -s or -u flags')
+
+				sequencesCount = Scop3dWorker.loadSequences(mySequencesOutput, myVerbose)
+				step(3)
+
+				Scop3dWorker.translateSequences(mySequencesOutput, myTranslatedSeqOutput, myVerbose)
+				step(4)
+
+				Scop3dWorker.doAlignment(myTranslatedSeqOutput, myTranslatedAlnOutput, myVerbose)
+				step(5)
+
+				Scop3dWorker.calcConsensus(myTranslatedAlnOutput, myConsensusOutput, myVerbose)
+				step(6)
+
+				Scop3dWorker.callVariants(mySequencesOutput, myTranslatedAlnOutput, myConsensusOutput, myVariantsFrequencyOutput, myVerbose)
+				step(12)
+
+		if myArgs.entropy:
+
+			if (myArgs.uniprotid != None):
+				Scop3dWorker.doUniprotBlast(myArgs.uniprotid, myUniprotOutput, myVerbose)
+				step(1)
+				Scop3dWorker.downloadUniprotSequences(myArgs.uniprotid, myUniprotOutput, mySequencesOutput, myArgs.cutoff, myVerbose)
+				step(2)
+			elif (myArgs.sequencefile != None):
+				with open(myArgs.sequencefile, 'r') as f:
+					sequence = f.read()
+				Scop3dWorker.doUniprotBlast(sequence, myUniprotOutput, myVerbose)
+				step(1)
+				Scop3dWorker.downloadUniprotSequences(None, myUniprotOutput, mySequencesOutput, myArgs.cutoff, myVerbose)
+				step(2)
+			elif (myArgs.fastafile != None):
+				mySequencesOutput = myArgs.fastafile
+				step(2)
+			else :
+				exit('Please specify one of -f, -s or -u flags')
+
+			sequencesCount = Scop3dWorker.loadSequences(mySequencesOutput, myVerbose)
+			step(3)
+
+			Scop3dWorker.doAlignment(mySequencesOutput, myAlignmentOutput, myVerbose)
+			step(4)
+
+			Scop3dWorker.doSplit(mySequencesOutput, sequencesDir, myVerbose)
+			step(5)
+
+			Scop3dWorker.doPairwiseAlignment(sequencesDir, alignmentsDir, myVerbose)
+			shutil.rmtree(sequencesDir)
+			step(6)
+
+			Scop3dWorker.calcIdentitySimilarity(alignmentsDir, myAligmentStatsOutput, myVerbose)
+			shutil.rmtree(alignmentsDir)
+			step(7)
+
+			Scop3dWorker.calcConsensus(myAlignmentOutput, myConsensusOutput, myVerbose)
+			step(8)
+
+			Scop3dWorker.calcAbundance(myAlignmentOutput, myConsensusOutput, myAbundanceOutput, myAbundancePercentOutput, myVerbose)
+			step(9)
+
+			Scop3dWorker.calcEntropy(sequencesCount, myAbundanceOutput, myEntropyOutput, myVerbose)
+			step(10)
+
+			Scop3dWorker.calcVariation(myAbundancePercentOutput, myVariationOutput, myVerbose)
+			step(11)
+
+			Scop3dWorker.drawWeblogo(myAlignmentOutput, myLogoOutput, myVerbose)
+			step(12)
+
+	if myAction == 'blast':
+			Scop3dWorker.doBlast(myArgs.fastafile, myBlastOutput, myVerbose)
+			step(13)
+			blastSummary = Scop3dWorker.getBlastSummary(myBlastOutput, myBlastSummaryOutput, myVerbose)
+			step(14)
+
+	if myAction == 'structure':
+
+		if myArgs.pdbid != None:
+			pdbOutput = Scop3dWorker.downloadPDB(myArgs.pdbid, myWorkdir)
+			step(15)
+		if myArgs.pdbfile != None:
+			pdbOutput = myArgs.pdbfile
+			step(15)
+
+		print('Loading PDB from file ' + pdbOutput + '...')
+		with open(pdbOutput, 'r') as f:
+			lines = f.readlines()
+			pdbID = lines[0][62:66]
+		parser = PDBParser(QUIET=True)
+		structure = parser.get_structure(pdbID, pdbOutput)
+		print('OK')
+		step(16)
+
+		mySequence = myConsensusOutput
+		Scop3dWorker.doChainAlignments(pdbID, structure, mySequence, chainSequencesDir, myVerbose)
+		step(17)
+
+		if myArgs.chain != None:
+			print ('Chains to be adjusted: ' + myArgs.chain)
+			adjustChains = myArgs.chain.split(',')
+			step(18)
+		else:
+			adjustChains = Scop3dWorker.selectChains(pdbID, chainSequencesDir, myVerbose)
+			step(18)
+
+		with open(myChainsOutput, 'w', 0) as f:
+			f.write(pdbID + '\n')
+			f.write(','.join(adjustChains))
+		step(19)
+
+		if myArgs.entropy:
+			# annotating structure with consensus sequence entropy and conservation
+			(entropy, conservation) = Scop3dWorker.getChainEntropyVariationData(pdbID, myEntropyOutput, myVariationOutput, chainSequencesDir, adjustChains, myWorkdir, myArgs.verbose)
+			shutil.rmtree(chainSequencesDir)
+			step(20)
+
+			Scop3dWorker.changeBfactors(structure, adjustChains, entropy, myArgs.verbose, 110)
+			Scop3dWorker.savePDB(structure, myEntropyPDBOutput, description="entropy")
+			step(21)
+
+			Scop3dWorker.changeBfactors(structure, adjustChains, conservation, myArgs.verbose, 110)
+			Scop3dWorker.savePDB(structure, myConservationPDBOutput, description="conservation")
+			step(22)
+
+		if myArgs.variants:
+			# annotating structure with SNP  frequency and type
+			(snpFrequency, snpType) = Scop3dWorker.getChainFrequencyTypeData(pdbID, myVariantsFrequencyOutput, chainSequencesDir, adjustChains, myWorkdir, myArgs.verbose)
+			shutil.rmtree(chainSequencesDir)
+			step(20)
+
+			Scop3dWorker.changeBfactors(structure, adjustChains, snpFrequency, myArgs.verbose, 0)
+			Scop3dWorker.savePDB(structure, myFrequencyPDBOutput, description="SNP frequency")
+			step(21)
+
+			pdbData = Scop3dWorker.extractPDBdata(structure, adjustChains, snpType, myArgs.verbose)
+			with open(mySNPPDBTypeDataOutput, 'w') as f:
+				pdbDataJson = json.dumps(pdbData, indent=4, sort_keys=True)
+				f.write(pdbDataJson + "\n")
+			step(22)
+
+except Exception as e:
+	if myVerbose:
+		traceback.print_exc(file=sys.stdout)
+	exit('ERROR: ' + repr(e))
+
+finally:
+	os.remove(myPidOutput)
