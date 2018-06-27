@@ -86,11 +86,22 @@ def downloadUniprotSequences(uniprotID, blastFile, sequencesFile, cutoff, verbos
 				if (identityPercent >= float(cutoff)):
 					try:
 						sequence = urllib2.urlopen('http://www.uniprot.org/uniprot/' + seqID + '.fasta')
-						f.write(sequence.read() + "\n");
+						f.write(sequence.read() + "\n")
 						if verbose:
 							print(seqID + " (identity " + str(identityPercent) + "% >= cutoff " + str(cutoff) + "%) - adding")
 					except Exception as e:
-						print("WARNING: unable to download this entry: " + str(e))
+						if verbose:
+							print("WARNING: unable to download entry " + seqID + " from Uniprot: " + str(e))
+							print("Trying NCBI protein...")
+						handle = Entrez.efetch(db="protein", id=seqID, rettype="fasta", retmode="xml")
+						erecords = Entrez.parse(handle)
+						for erecord in erecords:
+							r = SeqRecord( Seq.Seq(erecord['TSeq_sequence'], IUPAC.unambiguous_dna ), id=erecord['TSeq_accver'], description=erecord['TSeq_defline'])
+							SeqIO.write(r, f, "fasta")
+							f.write("\n")
+							if verbose:
+								print("OK")
+						handle.close()
 				else:
 					if verbose:
 						print(seqID + " (identity " + str(identityPercent) + "% < cutoff " + str(cutoff) + "%) - skipping")
@@ -239,7 +250,12 @@ def calcAbundance(alignmentFile, consensusFile, abundanceFile, abundancePercentF
 	alignment = AlignIO.read(alignmentFile, "clustal")
 	summary = SummaryInfo(alignment)
 	consensusSeq = SeqIO.read(consensusFile, 'fasta')
-	abundanceMatrix = summary.pos_specific_score_matrix(consensusSeq)
+	if (len(consensusSeq) == alignment.get_alignment_length()):
+		abundanceMatrix = summary.pos_specific_score_matrix(consensusSeq)
+	else:
+		with open(consensusFile, "w") as f:			
+			SeqIO.write(SeqRecord( summary.dumb_consensus(), id='consensus'), f, "fasta")
+		abundanceMatrix = summary.pos_specific_score_matrix()
 	if verbose:
 		print("Abundance matrix (absolute values):")
 		print(str(abundanceMatrix))
