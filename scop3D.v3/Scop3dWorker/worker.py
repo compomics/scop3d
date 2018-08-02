@@ -415,6 +415,9 @@ def doChainAlignments(pdbID, structure, consensusFile, chainSequencesDir, verbos
 			sequence += pp.get_sequence()
 		sequenceID = pdbID + '_' + chain.get_id()
 		sequenceOutput = os.path.join(chainSequencesDir, sequenceID + '.fasta')
+		if (len(sequence) == 0):
+			print("ERROR: Unable to get chain sequence from PDB file.")
+			exit("Selected PDB-file does not contain protein structure.")
 		with open(sequenceOutput, 'w') as f:
 			f.write('>' + sequenceID + '\n' + str(sequence))
 		if verbose:
