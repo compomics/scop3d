@@ -158,7 +158,7 @@ def loadSequences(sequencesFile, verbose):
 # 			 Nucleic Acids Res 32(5), 1792-1797
 def doAlignment(sequencesFile, alignmentFile, verbose):
 	print('Performing sequence alignment...')
-	params = ['muscle', '-in', sequencesFile, '-out', alignmentFile, '-clwstrict']
+	params = ['muscle', '-in', sequencesFile, '-out', alignmentFile, '-fasta']
 	if not verbose:
 		params.append('-quiet')
 	subprocess.check_call(params)
@@ -247,7 +247,7 @@ def translateSequences(consensusFile, translatedFile, verbose):
 # 7. Calculation of the abundance matrices - biopython module
 def calcAbundance(alignmentFile, consensusFile, abundanceFile, abundancePercentFile, verbose):
 	print('Calculating the abundance matrix...')
-	alignment = AlignIO.read(alignmentFile, "clustal")
+	alignment = AlignIO.read(alignmentFile, "fasta")
 	summary = SummaryInfo(alignment)
 	consensusSeq = SeqIO.read(consensusFile, 'fasta')
 	if (len(consensusSeq) == alignment.get_alignment_length()):
@@ -723,7 +723,7 @@ def getEnsemblVariants(organismName, ensemblID, variantsFile, verbose):
 	return variants
 
 def getSnpSites(alignmentFile, fastaFile, vcfFile, verbose):
-	dnaRecs = [f for f in SeqIO.parse(alignmentFile, 'clustal')]
+	dnaRecs = [f for f in SeqIO.parse(alignmentFile, 'fasta')]
 	with open(fastaFile, "w") as f:
 		SeqIO.write(dnaRecs, f, "fasta")
 	params = ['snp-sites', '-rv', '-o', vcfFile, fastaFile]
@@ -732,7 +732,7 @@ def getSnpSites(alignmentFile, fastaFile, vcfFile, verbose):
 
 def callVariants(dnaSeqenceFile, protAlignmentFile, protConsSeqFile, outputFile, verbose):
 	# load the proteins alignment
-	protAlnRecs = [f for f in SeqIO.parse(protAlignmentFile, 'clustal')]
+	protAlnRecs = [f for f in SeqIO.parse(protAlignmentFile, 'fasta')]
 	strain_protAlnSeq = {rec.id:''.join([nt for nt in rec.seq]) for rec in protAlnRecs}
 	
 	# load raw dna sequences
