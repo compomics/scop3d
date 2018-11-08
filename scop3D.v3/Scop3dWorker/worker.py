@@ -343,7 +343,6 @@ def drawWeblogo(alignmentFile, logoFile, verbose):
 
 ### Stage 2
 
-
 def doUniprotBlast(uniprotid, blastFile, verbose):
 	print('Performing BLAST with the UniProt ID ' + uniprotid + '...')
 	results = NCBIWWW.qblast('blastp', 'swissprot', uniprotid)
@@ -387,6 +386,29 @@ def getBlastSummary(blastFile, blastSummaryFile, verbose):
 			print(summary)
 	blastsummary.close()
 	return records.alignments
+
+def getUniprotSummary(uniprotFile, blastSummaryFile, verbose):
+	print('Analyzing UNIPROT entry...')
+	with open(uniprotFile, 'r') as f:
+		proteinJson = f.read()
+	protein = json.loads(proteinJson)
+	blastsummary = open(blastSummaryFile, 'w')
+	if (verbose):
+		print('Found ' + str(len(protein['dbReferences'])) + ' db references. Filtering on PDB entries.')
+	idx = 0
+	for ref in protein['dbReferences']:
+		if ref['type'] == 'PDB':
+			idx+=1
+			summary = (str(idx) + ": " + str(ref['id']) + "\t\t" +
+				"resolution: " + str(ref['properties']['resolution']) + "\t\t" + "chains: " + str(ref['properties']['chains']) + "\t\t" +
+				"method: " + str(ref['properties']['method']) + "\n")
+			blastsummary.write(summary)
+			if (verbose):
+				print(summary)
+	blastsummary.close()
+	print('OK')
+	return idx
+
 
 def choosePDB(blastSummary, outputDir):
 	print('As a rule of thumb, a structure with high sequence coverage, identity and similarity is preferred.')
@@ -614,29 +636,31 @@ def extractPDBdata(structure, adjustChains, substitutionData, verbose):
 	print('OK')
 	return pdbData
 
-def getUniprotRecord(uniprotID, recordFile, sequenceFile):
+def getUniprotRecord(uniprotID, recordFile, sequenceFile = None):
 	print("Downloading record for " + uniprotID + " from UniProt...")
 	response = urllib2.urlopen('https://www.ebi.ac.uk/proteins/api/proteins/' + uniprotID)
 	proteinJson = response.read()
 	protein = json.loads(proteinJson)
-	with open(recordFile, 'w') as f:
+	with open(recordFile, 'w', 0) as f:
 		proteinJson = json.dumps(protein, indent=4, sort_keys=True)
-		f.write(proteinJson + "\n");
+		f.write(proteinJson + "\n")
+		f.flush()
 	ensemblID = None
-	for ref in protein['dbReferences']:
-		if ref['type'] == 'Ensembl':
-			ensemblID = ref['id']
-	if ensemblID == None:
-		raise Exception('Protein record in Uniprot does not have reference to Ensembl')
-	organism = protein['organism']['names']
 	organismName = ''
-	for o in organism:
-		if o['type'] == 'scientific':
-			organismName = o['value']
-			break
-	record = SeqRecord( Seq.Seq(protein['sequence']['sequence'], IUPAC.protein), id=protein['accession'], name=protein['id'], description=protein['id'])
-	with open(sequenceFile, "w") as f:
-		SeqIO.write([record], f, "fasta")
+	if sequenceFile != None:
+		for ref in protein['dbReferences']:
+			if ref['type'] == 'Ensembl':
+				ensemblID = ref['id']
+		if ensemblID == None:
+			raise Exception('Protein record in Uniprot does not have reference to Ensembl')
+		organism = protein['organism']['names']
+		for o in organism:
+			if o['type'] == 'scientific':
+				organismName = o['value']
+				break
+		record = SeqRecord( Seq.Seq(protein['sequence']['sequence'], IUPAC.protein), id=protein['accession'], name=protein['id'], description=protein['id'])
+		with open(sequenceFile, "w") as f:
+			SeqIO.write([record], f, "fasta")
 	print('OK')
 	return ensemblID, organismName
 

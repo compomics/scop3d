@@ -32,9 +32,9 @@ from Scop3dWorker import worker as Scop3dWorker
 
 __author__ = 'Elien Vandermarliere, Lukasz Kreft'
 __copyright__ = 'Copyright 2017, VIB'
-__credits__ = ['Elien Vandermarliere', 'Lukasz Kreft', 'Niels Hulstaert', 'Davy Maddelein']
+__credits__ = ['Elien Vandermarliere', 'Lukasz Kreft', 'Demet Turan', 'Niels Hulstaert', 'Davy Maddelein']
 __license__ = 'GPL'
-__version__ = '3.0'
+__version__ = '3.1'
 __maintainer__ = 'Elien Vandermarliere'
 __email__ = 'elien.vandermarliere@vib.be'
 __status__ = 'Development'
@@ -42,6 +42,12 @@ __status__ = 'Development'
 parser = argparse.ArgumentParser(description='Sequence Conservation On Protein 3D structure')
 
 subparsers = parser.add_subparsers(help='available commands', dest='action')
+
+parserUniprot = subparsers.add_parser('uniprot', help='download suitable PDB structures related to particular Uniprot entry')
+parserUniprot.add_argument('-v', '--verbose', action='store_true', help='print processing info on console')
+parserUniprot.add_argument('-w', '--workdir', metavar='directory', default='.', help='working directory')
+parserUniprot.add_argument('uniprotID', help='uniprotID to download the related PDB structures from')
+
 
 parserBlast = subparsers.add_parser('blast', help='perform BLAST on consensus sequence to find suitable PDB structure')
 parserBlast.add_argument('-v', '--verbose', action='store_true', help='print processing info on console')
@@ -90,6 +96,7 @@ myUniprotOutput 			= os.path.join(myWorkdir, 'uniprot_results.xml')
 myNCBIOutput	 			= os.path.join(myWorkdir, 'ncbi_results.xml')
 myBlastOutput 				= os.path.join(myWorkdir, 'blast_results.xml')
 myBlastSummaryOutput 		= os.path.join(myWorkdir, 'blast_summary.txt')
+myStructuresSummaryOutput	= os.path.join(myWorkdir, 'structures_summary.txt')
 myChainsOutput			 	= os.path.join(myWorkdir, 'chains.out')
 myAlignmentOutput 			= os.path.join(myWorkdir, 'msa.fasta')
 myTranslatedAlnOutput		= os.path.join(myWorkdir, 'msaprot.fasta')
@@ -225,6 +232,12 @@ try:
 			Scop3dWorker.doBlast(myArgs.fastafile, myBlastOutput, myVerbose)
 			step(13)
 			blastSummary = Scop3dWorker.getBlastSummary(myBlastOutput, myBlastSummaryOutput, myVerbose)
+			step(14)
+
+	if myAction == 'uniprot':
+			Scop3dWorker.getUniprotRecord(myArgs.uniprotID, myUniprotRecordOutput)
+			step(13)
+			blastSummary = Scop3dWorker.getUniprotSummary(myUniprotRecordOutput, myStructuresSummaryOutput, myVerbose)
 			step(14)
 
 	if myAction == 'structure':
