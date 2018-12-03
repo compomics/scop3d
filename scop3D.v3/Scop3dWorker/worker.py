@@ -649,17 +649,18 @@ def extractPDBdata(structure, adjustChains, substitutionData, verbose):
 	print('OK')
 	return pdbData
 
-def getUniprotRecord(uniprotID, recordFile, sequenceFile = None):
+def getUniprotRecord(uniprotID, recordFile = None, sequenceFile = None):
 	print("Downloading record for " + uniprotID + " from UniProt...")
 	response = urllib2.urlopen('https://www.ebi.ac.uk/proteins/api/proteins/' + uniprotID)
 	proteinJson = response.read()
 	protein = json.loads(proteinJson)
-	with open(recordFile, 'w', 0) as f:
-		proteinJson = json.dumps(protein, indent=4, sort_keys=True)
-		f.write(proteinJson + "\n")
-		f.flush()
 	ensemblID = None
 	organismName = ''
+	if recordFile != None:
+		with open(recordFile, 'w', 0) as f:
+			proteinJson = json.dumps(protein, indent=4, sort_keys=True)
+			f.write(proteinJson + "\n")
+			f.flush()
 	if sequenceFile != None:
 		for ref in protein['dbReferences']:
 			if ref['type'] == 'Ensembl':

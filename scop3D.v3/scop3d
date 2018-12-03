@@ -126,7 +126,7 @@ try:
 
 			if myArgs.uniprotid != None:
 				myArgs.uniprotid = myArgs.uniprotid.upper()
-				(ensemblID, organism) = Scop3dWorker.getUniprotRecord(myArgs.uniprotid, myUniprotRecordOutput, myConsensusOutput)
+				(ensemblID, organism) = Scop3dWorker.getUniprotRecord(myArgs.uniprotid, None, myConsensusOutput)
 				step(8)
 				ensemblVariants = Scop3dWorker.getEnsemblVariants(organism, ensemblID, myEnsemblVariantsOutput, myVerbose)
 				step(9)
