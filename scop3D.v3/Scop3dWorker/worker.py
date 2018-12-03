@@ -533,12 +533,15 @@ def getChainFrequencyTypeData(pdbID, frequencyTypeFile, chainSequencesDir, adjus
 		mySNPlines = f.readlines()
 	frequencyData = {}
 	typeData = {}
+	typeNumber = {}
+	typeList = ['-']
 	for chain in adjustChains:
 		if verbose:
 			print('Adjusting chain: ' + chain)
 		#chain = chain.upper()
 		frequencyData[chain] = []
 		typeData[chain] = []
+		typeNumber[chain] = []
 		alignmentOutput = os.path.join(chainSequencesDir, pdbID + '_' + chain + '.needle')
 		sequences = AlignIO.read(alignmentOutput, "emboss")
 		dataOutput = os.path.join(outputDir, pdbID + '_' + chain + '_frequency_type.txt')
@@ -550,6 +553,7 @@ def getChainFrequencyTypeData(pdbID, frequencyTypeFile, chainSequencesDir, adjus
 			ci = 1;
 			for i in range(sequences.get_alignment_length()):
 				if sequenceResidues[i] != '-':
+					typeScore = 0
 					if consensusResidues[i] == '-':
 						frequencyScore = 0
 						types = '-'
@@ -558,16 +562,25 @@ def getChainFrequencyTypeData(pdbID, frequencyTypeFile, chainSequencesDir, adjus
 						words = line.split('\t')
 						frequencyScore = int(words[1])
 						types = words[3]
-						ci+=1
+						for t in types.split(','):
+							p = 0
+							try:
+								p = typeList.index(t)
+							except ValueError:
+								typeList.append(t)
+								p = typeList.index(t)
+							typeScore += 2**p
+						ci += 1
 					frequencyData[chain].append([sequenceResidues[i], frequencyScore])
 					typeData[chain].append([sequenceResidues[i], types])
+					typeNumber[chain].append([sequenceResidues[i], typeScore])
 					writer.writerow([sequenceResidues[i], consensusResidues[i], frequencyScore, types])
 				else:
 					#TODO: what then ?
 					if consensusResidues[i] != '-':
 						ci+=1
 	print('OK')
-	return(frequencyData, typeData)
+	return(frequencyData, typeData, typeNumber, typeList)
 
 def changeBfactors(structure, adjustChains, substitutionData, verbose, noDataValue):
 	print('Changing b-factors of atoms in PDB...')
@@ -872,9 +885,13 @@ def calcFrequencyType(features, sequenceFile, outputFile, verbose):
 			writer.writerow([residue, freq, change, snptype, ids])
 	print('OK')
 
-def savePDB(structure, outputFile, description = ""):
+def savePDB(structure, outputFile, description = "", header = []):
 	print('Saving ' + description + ' PDB...')
 	io = PDBIO()
 	io.set_structure(structure)
 	io.save(outputFile)
+	with open(outputFile, 'r+') as f:
+		content = f.read()
+		f.seek(0, 0)
+		f.write("".join(header).rstrip('\r\n') + '\n' + content)
 	print('OK')

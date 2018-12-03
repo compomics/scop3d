@@ -102,10 +102,6 @@ myAlignmentOutput 			= os.path.join(myWorkdir, 'msa.fasta')
 myTranslatedAlnOutput		= os.path.join(myWorkdir, 'msaprot.fasta')
 myAligmentStatsOutput 		= os.path.join(myWorkdir, 'pairwise_stats.txt')
 myProgressOutput			= os.path.join(myWorkdir, 'progress.txt')
-myEntropyPDBOutput			= os.path.join(myWorkdir, 'pdb_entropy.ent')
-myConservationPDBOutput		= os.path.join(myWorkdir, 'pdb_conservation.ent')
-myFrequencyPDBOutput		= os.path.join(myWorkdir, 'pdb_frequency.ent')
-myTypePDBOutput				= os.path.join(myWorkdir, 'pdb_type.ent')
 myUniprotVariantsOutput		= os.path.join(myWorkdir, 'uniprot_variants.json')
 myUniprotRecordOutput		= os.path.join(myWorkdir, 'uniprot_record.json')
 myEnsemblVariantsOutput		= os.path.join(myWorkdir, 'ensembl_variants.txt')
@@ -250,11 +246,20 @@ try:
 			step(15)
 
 		print('Loading PDB from file ' + pdbOutput + '...')
+		pdbHeader = []
 		with open(pdbOutput, 'r') as f:
 			lines = f.readlines()
 			pdbID = lines[0][62:66]
+			for l in lines:
+				record = l[0:6]
+				if record in ['HEADER', 'OBSLTE', 'TITLE ', 'SPLIT ', 'CAVEAT', 'COMPND', 'SOURCE', 'KEYWDS', 'EXPDTA', 'AUTHOR', 'REVDAT', 'SPRSDE', 'JRNL  ','REMARK']:
+					pdbHeader.append(l)
 		parser = PDBParser(QUIET=True)
 		structure = parser.get_structure(pdbID, pdbOutput)
+		myEntropyPDBOutput = os.path.join(myWorkdir, pdbID+'_entropy.pdb')
+		myConservationPDBOutput = os.path.join(myWorkdir, pdbID+'_conservation.pdb')
+		myFrequencyPDBOutput = os.path.join(myWorkdir, pdbID+'_frequency.pdb')
+		myTypePDBOutput = os.path.join(myWorkdir, pdbID+'_type.pdb')
 		print('OK')
 		step(16)
 
@@ -273,6 +278,7 @@ try:
 		with open(myChainsOutput, 'w', 0) as f:
 			f.write(pdbID + '\n')
 			f.write(','.join(adjustChains))
+		pdbHeader.append(("REMARK 999 SCOP3D HAS ADJUSTED B VALUES FOR CHAIN(S): "+','.join(adjustChains)).ljust(80)+"\n")
 		step(19)
 
 		if myArgs.entropy:
@@ -281,22 +287,36 @@ try:
 			shutil.rmtree(chainSequencesDir)
 			step(20)
 
+			header=list(pdbHeader)
+			header.append("REMARK 999  COLUMNS 61 - 66 REPRESENT SEQUENCE ENTROPY AT EACH POSITION ".ljust(80)+"\n")
 			Scop3dWorker.changeBfactors(structure, adjustChains, entropy, myArgs.verbose, 110)
-			Scop3dWorker.savePDB(structure, myEntropyPDBOutput, description="entropy")
+			Scop3dWorker.savePDB(structure, myEntropyPDBOutput, "entropy", header)
 			step(21)
 
+			header = list(pdbHeader)
+			header.append("REMARK 999  COLUMNS 61 - 66 REPRESENT SEQUENCE CONSERVATION AT EACH POSITION ".ljust(80)+"\n")
 			Scop3dWorker.changeBfactors(structure, adjustChains, conservation, myArgs.verbose, 110)
-			Scop3dWorker.savePDB(structure, myConservationPDBOutput, description="conservation")
+			Scop3dWorker.savePDB(structure, myConservationPDBOutput, "conservation", header)
 			step(22)
 
 		if myArgs.variants:
 			# annotating structure with SNP  frequency and type
-			(snpFrequency, snpType) = Scop3dWorker.getChainFrequencyTypeData(pdbID, myVariantsFrequencyOutput, chainSequencesDir, adjustChains, myWorkdir, myArgs.verbose)
+			(snpFrequency, snpType, snpTypeValue, typeList) = Scop3dWorker.getChainFrequencyTypeData(pdbID, myVariantsFrequencyOutput, chainSequencesDir, adjustChains, myWorkdir, myArgs.verbose)
 			shutil.rmtree(chainSequencesDir)
 			step(20)
 
+			header = list(pdbHeader)
+			header.append("REMARK 999  COLUMNS 61 - 66 REPRESENT SEQUENCE SNP FREQUENCY AT EACH POSITION ".ljust(80)+"\n")
 			Scop3dWorker.changeBfactors(structure, adjustChains, snpFrequency, myArgs.verbose, 0)
-			Scop3dWorker.savePDB(structure, myFrequencyPDBOutput, description="SNP frequency")
+			Scop3dWorker.savePDB(structure, myFrequencyPDBOutput, "SNP frequency", header)
+			step(21)
+
+			header = list(pdbHeader)
+			header.append("REMARK 999  COLUMNS 61 - 66 REPRESENT SEQUENCE SNP TYPES ENCODED AS BELOW ".ljust(80)+"\n")
+			for i, t in enumerate(typeList):
+				header.append(("REMARK 999  " + str(2**i) + ": " + t).ljust(80)+"\n")
+			Scop3dWorker.changeBfactors(structure, adjustChains, snpTypeValue, myArgs.verbose, 0)
+			Scop3dWorker.savePDB(structure, myTypePDBOutput, "SNP type", header)
 			step(21)
 
 			pdbData = Scop3dWorker.extractPDBdata(structure, adjustChains, snpType, myArgs.verbose)
