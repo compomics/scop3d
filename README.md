@@ -38,7 +38,8 @@ For SNP variants analysis in the first PDB-file, the B-values are replaced by th
 ![Flow diagram of Scop3D](Scop3d.png "Flow diagram of Scop3D")
 
 ### Citation
- * [Vermeire and Vermaere et al.: Proteomics. 2015 Apr;15(8):1448-52.](http://www.ncbi.nlm.nih.gov/pubmed/25641949)
+ * v3 [Kreft et al.: J Proteome Res. 2018 Dec 12](https://www.ncbi.nlm.nih.gov/pubmed/30540477)
+ * v2 [Vermeire and Vermaere et al.: Proteomics. 2015 Apr;15(8):1448-52.](http://www.ncbi.nlm.nih.gov/pubmed/25641949)
  * If you use scop3D as part of a paper, please include the reference above.
 
 ----
@@ -49,7 +50,7 @@ Scop3D is available either as web tool or as standalone command line tool.
 
 ### Web interface
 
-Fully functional web interface is available under [TBD](http://example.com)
+Fully functional web interface is available under [https://iomics.ugent.be/scop3d/](https://iomics.ugent.be/scop3d/)
 
 ### Command line
 
