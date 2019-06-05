@@ -81,7 +81,10 @@ def downloadUniprotSequences(uniprotID, blastFile, sequencesFile, cutoff, verbos
 			for hsp in alignment.hsps:
 				title = alignment.title
 				words = title.split('|')
-				seqID = words[3]
+				if words[0] == 'gi':
+			            seqID = words[3]
+				elif words[0] == 'sp':
+				    seqID = words[1]
 				identityPercent = 100.0 * float(hsp.identities) / float(hsp.align_length)
 				if (identityPercent >= float(cutoff)):
 					try:
